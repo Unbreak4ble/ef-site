@@ -1,0 +1,11 @@
+include:
+  - services/compose.yml
+
+services:
+  web:
+    image: website
+    hostname: website
+    links:
+      - services
+    depends_on:
+      - services

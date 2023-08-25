@@ -1,0 +1,14 @@
+{
+	"services": [
+		{
+			"name": "api service",
+			"hostname": "services",
+			"port": 80
+		},
+		{
+			"name": "page service",
+			"hostname": "website",
+			"port": 80
+		}
+	]
+}

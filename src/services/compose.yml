@@ -1,0 +1,12 @@
+
+services:
+  services:
+    image: website
+    hostname: services
+    links:
+      - products
+    depends_on:
+      - products
+  products:
+    image: website
+    hostname: products

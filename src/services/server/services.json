@@ -1,0 +1,10 @@
+{
+	"services": [
+		{
+			"name": "events",
+			"hostname": "api_events",
+			"path": "/api/events",
+			"port": 80
+		}
+	]
+}

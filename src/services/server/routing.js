@@ -14,7 +14,7 @@ function handle(app) {
 	}
 
 	app.all("*", (req, res) => {
-			res.status(404).send("not found");
+			res.status(404).send("api found");
 	});
 }
 

@@ -4,7 +4,7 @@ FROM debian_up:latest
 
 EXPOSE $port
 
-WORKDIR /home/ef
+WORKDIR /home/events
 
 COPY . ./
 

@@ -1,12 +1,12 @@
-
 services:
   services:
-    image: website
+    build: .
     hostname: services
-    links:
-      - products
     depends_on:
-      - products
-  products:
-    image: website
-    hostname: products
+      - events
+    links:
+      - events
+
+  events:
+    build: ./api/events/
+    hostname: api_events

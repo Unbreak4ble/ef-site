@@ -1,17 +1,12 @@
 include:
   - services/compose.yml
+  - networks.yml
 
 services:
   main:
     build: ./main/
     hostname: efserver
-    links:
-      - services
-      - webpage
+    networks:
+      - mainet
     depends_on:
       - webpage
-      - services
-
-  webpage:
-    build: ./website/
-    hostname: website

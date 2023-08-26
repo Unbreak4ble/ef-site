@@ -7,4 +7,5 @@ else
 fi
 
 echo "building services";
+cp services/compose.yml main/
 docker compose -f compose.yml up --force-recreate --build;

@@ -6,7 +6,10 @@ services:
   main:
     build: ./main/
     hostname: efserver
+    restart: unless-stopped
     networks:
       - mainet
     depends_on:
       - webpage
+    volumes:
+      - "./static/:/home/ef/static"

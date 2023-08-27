@@ -15,7 +15,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Suck React
+          Suck React Cusao
         </a>
       </header>
     </div>

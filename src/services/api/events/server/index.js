@@ -4,10 +4,11 @@ const port = 80;
 const redis = require("../redis/redis.js");
 
 app.get("/api/events", async (req, res) => {
+	console.log("connec");
 	const connection = await redis.setup();
 	console.log(await connection.client.get("server_startup"));
 	await connection.client.set("clients", 0);
-	res.send("events me modifield. everything working fine!!!");
+	res.send("events me");
 });
 
 app.listen(port, () => console.log("server listening in port " + port));

@@ -1,5 +1,5 @@
 
-if [[ "$(docker images -q debian_up:latest 2> /dev/null)" == "" ]]; then
+if [[ "$(docker images -q debian_up:latest 2> /dev/null)" == "[]" ]]; then
   echo "building updated system";
 	docker build -t debian_up:latest .
 else
@@ -13,6 +13,16 @@ else
 		echo "using virtual network";
 fi
 
-echo "building services";
 cp services/compose.yml main/services.yml
+
+cat networks.yml services/compose.yml > services/.compose.yml
+
+echo "deleting old services container"
+docker compose -f services/.compose.yml rm -s -f;
+
+rm services/.compose.yml;
+
+echo "building services container";
 docker compose -f compose.yml up -d --build;
+
+

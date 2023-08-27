@@ -6,6 +6,13 @@ else
 	echo "using debian_up:latest image";
 fi
 
+if ! [[ "$(docker network inspect service_network >/dev/null 2>&1)" == "" ]]; then
+    docker network create --driver bridge service_network;
+		echo "virtual network set";
+else
+		echo "using virtual network";
+fi
+
 echo "building services";
 cp services/compose.yml main/services.yml
-docker compose -f compose.yml up --force-recreate --build;
+docker compose -f compose.yml up -d --build;

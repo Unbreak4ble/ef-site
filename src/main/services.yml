@@ -3,26 +3,28 @@ services:
   webpage:
     build: ./page/
     hostname: website
+    container_name: webpage
     networks:
       - mainet
-    depends_on:
-      - api_events
     volumes:
       - "../static/frontend/page/:/home/website/server/frontend"
   
   web:
     build: ./web/
     hostname: webpage
+    container_name: web
     networks:
       - mainet
     volumes:
       - "./web/src/:/home/web/src"
       - "./web/public/:/home/web/public"
+      - "../static/:/home/web/static"
 
 # services
   api_events:
     build: ./api/events/
     hostname: api_events
+    container_name: api_events
     networks:
       - mainet
     volumes:

@@ -1,2 +1,4 @@
 networks:
   mainet:
+    name: service_network
+    external: true

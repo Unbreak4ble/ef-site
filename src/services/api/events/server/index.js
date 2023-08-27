@@ -7,7 +7,7 @@ app.get("/api/events", async (req, res) => {
 	const connection = await redis.setup();
 	console.log(await connection.client.get("server_startup"));
 	await connection.client.set("clients", 0);
-	res.send("events me");
+	res.send("events me modifield. everything working fine!!!");
 });
 
 app.listen(port, () => console.log("server listening in port " + port));

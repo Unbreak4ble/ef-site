@@ -7,6 +7,7 @@ services:
     build: ./main/
     hostname: efserver
     restart: unless-stopped
+    container_name: main
     networks:
       - mainet
     depends_on:
@@ -18,6 +19,7 @@ services:
   redis_server:
     image: redis
     hostname: redis_server
+    container_name: redis
     restart: unless-stopped
     networks:
       - mainet

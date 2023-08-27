@@ -10,9 +10,20 @@ services:
     volumes:
       - "../static/frontend/page/:/home/website/server/frontend"
   
+  web:
+    build: ./web/
+    hostname: webpage
+    networks:
+      - mainet
+    volumes:
+      - "./web/src/:/home/web/src"
+      - "./web/public/:/home/web/public"
+
 # services
   api_events:
     build: ./api/events/
     hostname: api_events
     networks:
       - mainet
+    volumes:
+      - "../static/redis/:/home/api_events/redis"

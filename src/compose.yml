@@ -10,6 +10,14 @@ services:
     networks:
       - mainet
     depends_on:
+      - redis_server
       - webpage
     volumes:
       - "./static/:/home/ef/static"
+
+  redis_server:
+    image: redis
+    hostname: redis_server
+    restart: unless-stopped
+    networks:
+      - mainet

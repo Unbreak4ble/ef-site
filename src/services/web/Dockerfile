@@ -4,10 +4,10 @@ FROM debian_up:latest
 
 EXPOSE $port
 
-WORKDIR /home/api_events
+WORKDIR /home/web
 
 COPY . ./
 
 RUN npm install
 
-CMD ["node", "."]
+CMD PORT=80 npm start

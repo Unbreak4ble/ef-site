@@ -1,0 +1,38 @@
+
+.navbar {
+	position: relative;
+	background-color: #36393e;
+	backdrop-filter: blur(30px);
+	color: white;
+	height: 30px;
+	padding: 10px;
+	border-bottom: 1px solid white;
+}
+
+.navbar > div {
+	position: absolute;
+	left: 1%;
+	background: url(https://a.marketing.englishlive.ef.com/_assets/logos/englishlive.svg) no-repeat;
+	background-size: 200px 30px;
+	width: 30%;
+	height: 60%;
+}
+
+.navbar > nav {
+	position: absolute;
+	right: 0;
+	filter: none;
+}
+
+.navbar > nav > ul {
+	display: flex;
+	margin: 0 auto;
+	list-style: none;
+}
+.navbar > nav > ul > li {
+	padding: 0 20px;
+}
+
+.navbar > nav > ul > li:hover {
+	border-bottom: 1px double white;
+}

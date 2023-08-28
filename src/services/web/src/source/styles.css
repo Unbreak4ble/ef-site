@@ -1,35 +1,29 @@
+:root {
+	--color: black;
+	--bg-color: white;
+	--border-bg-color: Gainsboro;
+	--main-bg-color: white;
+}
 
 .spa {
 	display: flex;
 	margin: 10px;
-	color: white;
-}
-
-.spa > .main_container {
-
+	color: var(--color);
 }
 
 .Table {
 	left: 0;
-	display: grid;
-}
-
-.Table > tr {
-	margin: 0 0;
-	border-top: 1px solid white;
-	border-bottom: 1px solid white;
-	border-left: 1px solid white;
-	border-right: 1px solid white;
+	border: 1px solid var(--border-bg-color);
 }
 
 .navbar {
 	position: relative;
-	background-color: #36393e;
+	background-color: var(--bg-color); /*#36393e;*/
 	backdrop-filter: blur(30px);
-	color: white;
+	color: var(--color);
 	height: 30px;
 	padding: 10px;
-	border-bottom: 1px solid white;
+	border-bottom: 1px solid var(--border-bg-color);
 }
 
 .navbar > div {
@@ -57,5 +51,5 @@
 }
 
 .navbar > nav > ul > li:hover {
-	border-bottom: 1px solid white;
+	border-bottom: 1px solid var(--border-bg-color);
 }

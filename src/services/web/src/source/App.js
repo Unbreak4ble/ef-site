@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper';
 
 function loadSessions() {
 	return [
-			{name: "sample", working: false, completedSteps: 10},
+			{name: "sample", expiry: 10, working: false, completedSteps: 10},
 			{name: "sample again"}
 	];
 }
@@ -43,15 +43,17 @@ class Menu extends React.Component {
 			</div>
 		);*/
 		return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+    <TableContainer component={Paper} className="Table">
+      <Table sx={{ minWidth: 650 }}>
         <TableHead>
           <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            <TableCell>Account</TableCell>
+            <TableCell align="right">Session expiration</TableCell>
+            <TableCell align="right">Status</TableCell>
+            <TableCell align="right">Elapsed Time</TableCell>
+            <TableCell align="right">Activities Done</TableCell>
+            <TableCell align="right">Current</TableCell>
+            <TableCell align="right">Time Left</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

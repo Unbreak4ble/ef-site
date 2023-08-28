@@ -1,6 +1,8 @@
+@import url("source/styles.css");
+
 body {
   margin: 0;
-	background-color: #1e2124;
+	background-color: var(--main-bg-color);/*#1e2124;*/
 	background-size: cover;
 	min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

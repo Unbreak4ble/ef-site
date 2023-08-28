@@ -1,4 +1,27 @@
 
+.spa {
+	display: flex;
+	margin: 10px;
+	color: white;
+}
+
+.spa > .main_container {
+
+}
+
+.Table {
+	left: 0;
+	display: grid;
+}
+
+.Table > tr {
+	margin: 0 0;
+	border-top: 1px solid white;
+	border-bottom: 1px solid white;
+	border-left: 1px solid white;
+	border-right: 1px solid white;
+}
+
 .navbar {
 	position: relative;
 	background-color: #36393e;
@@ -14,7 +37,7 @@
 	left: 1%;
 	background: url(https://a.marketing.englishlive.ef.com/_assets/logos/englishlive.svg) no-repeat;
 	background-size: 200px 30px;
-	width: 30%;
+	width: 100vh;
 	height: 60%;
 }
 
@@ -30,9 +53,9 @@
 	list-style: none;
 }
 .navbar > nav > ul > li {
-	padding: 0 20px;
+	margin-right: 30px;
 }
 
 .navbar > nav > ul > li:hover {
-	border-bottom: 1px double white;
+	border-bottom: 1px solid white;
 }

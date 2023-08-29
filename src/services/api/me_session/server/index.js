@@ -9,12 +9,12 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get("/api/events", async (req, res) => {
+app.get("/api/me/session", async (req, res) => {
 	console.log("connec");
 	const connection = await redis.setup();
 	console.log(await connection.client.get("server_startup"));
 	await connection.client.set("clients", 0);
-	res.send("events me");
+	res.send("{name: 'hi'}");
 });
 
 app.listen(port, () => console.log("server listening in port " + port));

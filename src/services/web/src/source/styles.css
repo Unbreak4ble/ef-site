@@ -1,6 +1,6 @@
 :root {
 	--color: black;
-	--bg-color: white;
+	--bg-color: #fbfbfb;
 	--border-bg-color: Gainsboro;
 	--main-bg-color: white;
 }
@@ -23,7 +23,7 @@
 	color: var(--color);
 	height: 30px;
 	padding: 10px;
-	border-bottom: 1px solid var(--border-bg-color);
+	/*border-bottom: 1px solid var(--border-bg-color);*/
 }
 
 .navbar > div {
@@ -51,5 +51,15 @@
 }
 
 .navbar > nav > ul > li:hover {
+	position: relative;
 	border-bottom: 1px solid var(--border-bg-color);
+}
+
+
+.navbar > nav > ul > li > a {
+	position: relative;
+}
+
+.navbar > nav > ul > li:hover > a {
+	color: black;
 }

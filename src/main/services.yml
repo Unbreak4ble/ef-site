@@ -20,12 +20,9 @@ services:
       - "./web/public/:/home/web/public"
       - "../static/:/home/web/static"
 
-# services
-  api_events:
-    build: ./api/events/
-    hostname: api_events
-    container_name: api_events
+  api:
+    build: ./api/
+    hostname: api_service
+    container_name: api_service
     networks:
       - mainet
-    volumes:
-      - "../static/redis/:/home/api_events/redis"

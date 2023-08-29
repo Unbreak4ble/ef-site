@@ -27,13 +27,11 @@ function NavBar({ spa }) {
 			<div></div>
 			<nav>
 				<ul>
-					<li onClick={ () => change_spa(spa, "acc") } >
-					<div></div>
-					<a>Account</a>
+					<li onClick={ () => change_spa(spa, "acc") } >Account<div></div>
 					</li>
-					<li onClick={ () => change_spa(spa, "auto") } >Automation</li>
-					<li onClick={ () => change_spa(spa, "cheat") } >Cheat</li>
-					<li onClick={ () => change_spa(spa, "menu") } >Menu</li>
+					<li onClick={ () => change_spa(spa, "auto") } >Automation<div></div></li>
+					<li onClick={ () => change_spa(spa, "cheat") } >Cheat<div></div></li>
+					<li onClick={ () => change_spa(spa, "menu") } >Menu<div></div></li>
 				</ul>
 			</nav>
 		</div>

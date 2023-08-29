@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+		"jwt-decode": "latest",
+		"jwt-encode": "latest",
 		"redis": "latest",
 		"yaml": "latest",
 		"axios": "0.27.2",

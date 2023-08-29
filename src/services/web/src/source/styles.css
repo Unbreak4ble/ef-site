@@ -1,6 +1,6 @@
 :root {
 	--color: black;
-	--bg-color: #fbfbfb;
+	--bg-color: #fbfbf0;
 	--border-bg-color: Gainsboro;
 	--main-bg-color: white;
 }
@@ -23,7 +23,7 @@
 	color: var(--color);
 	height: 30px;
 	padding: 10px;
-	/*border-bottom: 1px solid var(--border-bg-color);*/
+	border-bottom: 1px solid var(--border-bg-color);
 }
 
 .navbar > div {
@@ -52,14 +52,28 @@
 
 .navbar > nav > ul > li:hover {
 	position: relative;
-	border-bottom: 1px solid var(--border-bg-color);
 }
 
+.navbar > nav > ul > li:hover > div {
+	position: absolute;
+	top: 39px;
+	background: black;
+	animation: border-expand 0.1s 1;
+	animation-fill-mode: forwards;
+	height: 10%;
+}
 
-.navbar > nav > ul > li > a {
+.align {
 	position: relative;
 }
 
-.navbar > nav > ul > li:hover > a {
-	color: black;
+@keyframes border-expand {
+	from {
+		left: 50%;
+		width: 0;
+	}
+	to {
+		left: 0;
+		width: 100%;
+	}
 }

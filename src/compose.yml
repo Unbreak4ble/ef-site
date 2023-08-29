@@ -23,3 +23,6 @@ services:
     restart: unless-stopped
     networks:
       - mainet
+    volumes:
+      - ./redis-data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf

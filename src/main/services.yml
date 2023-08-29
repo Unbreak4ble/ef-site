@@ -20,7 +20,7 @@ services:
       - "./web/public/:/home/web/public"
       - "../static/:/home/web/static"
 
-  api:
+  api_service:
     build: ./api/
     hostname: api_service
     container_name: api_service

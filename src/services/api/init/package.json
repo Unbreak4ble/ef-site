@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+		"cors": "latest",
+		"cookie-parser": "latest",
 		"jwt-decode": "latest",
 		"jwt-encode": "latest",
 		"redis": "latest",

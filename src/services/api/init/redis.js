@@ -1,7 +1,11 @@
 const { createClient } = require("redis");
-const token = require("./token.js"); 
 
-const init_client = () => new Promise(async resolve => {
+class Crud {
+	constructor() {
+		this.client = {};
+	}
+	
+	connect = async() => new Promise(async resolve => {
         const client = createClient({
                 url: "redis://redis_server"
         });
@@ -9,48 +13,62 @@ const init_client = () => new Promise(async resolve => {
         client.on("ready", () => connected = true);
 
         await client.connect();
-
-        const methods = {
-                connected: connected,
-                client: client
-        };
-        resolve(methods);
-});
-
-const session_append = async (client, name, value) => {
-	const sessions = await client.get("session");
-	let session_json = JSON.parse(sessions).sessions;
-	session_json.push({id: name, value: value});
-	let sessions_back = JSON.stringify(session_json);
-	console.log("added");
-	await client.set("session", sessions_back);
-};
-
-const session_delete = async (client, name) => {
-	const sessions = await client.get("session");
-	let session_json = JSON.parse(sessions).sessions;
+				this.client = client;
+        resolve(connected);
+	});
 	
-	for(let ss in session_json){
-		let session = session_json[ss];
-		if(session.id == name)
-			delete session_json[ss];
+	handleKey = (name) => void(this.key = name);
+
+	set = async (value) => {
+		const client = this.client;
+		await client.set(this.key, value);
+	};
+
+	remove = async () => {
+		const client = this.client;
+		await client.del(this.key);
+	};
+
+	get = async (key) => {
+		const client = this.client;
+		let values = null;
+		if(key)
+			values = JSON.parse(await client.get(this.key))[key];
+		else
+			values = JSON.parse(await client.get(this.key));
+		return values;
+	};
+
+	filter = async (key, opts) => {
+		const client = this.client;
+    const values = await client.get(this.key);
+		try{
+	    let values_json={};
+			if(key)
+				values_json = JSON.parse(values)[key];
+			else
+				values_json = JSON.parse(values);
+
+    	for(let ss in values_json){
+  	  	let value = values_json[ss];
+	      let eqs=0;
+      	for(let key in opts){
+    	   	if(value[key] == opts[key])
+  	      	++eqs;
+	        }
+      	  if(eqs == Object.keys(opts).length){
+    	    	return value;
+  	      }
+	    }
+		}catch{}
+    return null;
 	}
 
-	let sessions_back = JSON.stringify(session_json);
-	await client.set("session", sessions_back);
-};
-
-const session_get = async (client, name) => {
-	const sessions = await client.get("session");
-	let session_json = JSON.parse(sessions).sessions;
-	
-	for(let ss in session_json){
-		let session = session_json[ss];
-		if(session.id == name)
-			return session.value;
+	exists = async() => {
+		const client = this.client;
+		const res = await client.get(this.key);
+		return !!res;
 	}
-	return null;
 };
 
-
-module.exports = {init_client, session_append, session_delete, session_get}
+module.exports = {Crud}

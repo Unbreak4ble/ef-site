@@ -20,13 +20,11 @@ export async function loadSessions() {
 				console.log("trying: ", api);
 				let response;
 				try{
-					response = (await axios({
-						url: "http://"+api+":80/api/sessions",
-						method: "GET"
-					})).data;
+					response = (await axios.get("http://"+api+":80/api/sessions", { headers: {
+									authorization: loadCookies().token
+					}})).data;
 				}catch{}
-				console.log(response);
-				Cookies.set("test", "hello world");
+				console.log(document.cookie);
 				console.log("cookies: ", loadCookies());
 				console.log("date", calcDate(0, 110));
 				try{

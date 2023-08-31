@@ -26,3 +26,5 @@ services:
     container_name: api_service
     networks:
       - mainet
+    volumes:
+      - "../static/:/home/api_service/init/static/"

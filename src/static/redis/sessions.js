@@ -1,5 +1,5 @@
-const redis = require("./redis.js");
-const token = require("./token.js");
+const redis = require("./crud.js");
+const token = require("../utils/token.js");
 
 class Sessions {
 	constructor() {

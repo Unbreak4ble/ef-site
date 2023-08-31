@@ -1,5 +1,5 @@
 const { createClient } = require("redis");
-const token = require("./token.js"); 
+const token = require("../utils/token.js"); 
 
 class Client {
 	constructor() {

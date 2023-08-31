@@ -3,12 +3,12 @@ const express = require("express");
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const session = require("./session.js");
-const lib_sessions = require("./sessions.js");
-const { Crud } = require("./redis.js");
-const token = require("./token.js");
+const session = require("./static/redis/users.js");
+const lib_sessions = require("./static/redis/sessions.js");
+const { Crud } = require("./static/redis/crud.js");
+const token = require("./static/utils/token.js");
 const fs = require("fs");
-const ef = require("./ef-utils.js")
+const ef = require("./static/utils/ef-utils.js")
 
 async function handle(app) {
 	app.use(express.json());

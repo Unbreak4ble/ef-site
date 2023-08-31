@@ -38,6 +38,14 @@ export async function loadSessions(cbe) {
 						}
 						cbe(response)
 					}, 1000);
+
+					setInterval(() => {
+						response.map(session => {
+							if(!!!session.status) session.status=0;
+							++session.status;
+						});
+						cbe(response);
+					}, 1000);
 				}catch{}
 }
 

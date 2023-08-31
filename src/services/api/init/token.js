@@ -31,7 +31,9 @@ function rand_id(len=24){
 }
 
 function encode_jwt(data, header={"alg": "HS256", "typ": "JWT"}){
-	data = {...data, iat: Math.floor(new Date().getTime()/1000)};
+	const date = Math.floor(new Date().getTime()/1000);
+	const increase_time = 60*60*24; // 1 day
+	data = {...data, iat: date, exp: date+increase_time};
 	return jwt_encode(data, get_secret(), header);
 }
 
@@ -41,12 +43,11 @@ function decode_jwt(token) {
 
 function is_expired(token) {
 	if(!is_verified(token))
-		return false;
+		return true;
 	const [,payload] = token.split(".");
 	const decoded = JSON.parse(atob(payload));
-	const created_time = decoded.iat;
 	const current_time = Math.floor(new Date().getTime()/1000);
-	return calcDate(created_time, current_time)[0] > 24;
+	return (payload.exp - current_time) < 0;
 }
 
 function is_verified(token) {
@@ -57,7 +58,7 @@ function is_verified(token) {
 
 function is_all_ok(token) {
 	const expired = is_expired(token);
-	return expired != false;
+	return expired != true;
 }
 
 module.exports = {ascii_range, rand_range, rand_id, encode_jwt, decode_jwt, is_verified, get_secret, is_expired, is_all_ok}

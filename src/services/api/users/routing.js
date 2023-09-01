@@ -18,7 +18,7 @@ async function handle(app) {
 	const client = new session.Client();
 	await client.connect();
 
-	app.post("/api/login", async function(req, res) {
+	app.post("/api/users/login", async function(req, res) {
 		const body = req.body;
 		if(!(body.email && body.password)){
 			res.status(400).send("email or password not found");
@@ -32,7 +32,7 @@ async function handle(app) {
 		}
 	});
 
-	app.post("/api/register", async function(req, res) {
+	app.post("/api/users/register", async function(req, res) {
 		const body = req.body;
 		if(!(body.email && body.password)){
 			res.status(400).send("email or password not found");
@@ -44,40 +44,6 @@ async function handle(app) {
 			const token = await client.session_append(body.email, body.password);
 			res.send(token);
 		}
-	});
-
-	app.get("/api/sessions", async function(req, res){
-		const body = req.body;
-		const auth = req.headers.authorization;
-		if(!token.is_all_ok(auth))
-			return res.status(401).send();
-		const id = token.decode_jwt(auth).userId;
-		const crud = new Crud();
-		await crud.connect();
-		crud.handleKey("sessions");
-		let sessions = (await crud.get(id+"")) || "[]";
-		let payload = [];
-		for(let i=0; i<sessions.length; i++){
-			const ss_token = sessions[i].token;
-			if(!ss_token) continue;
-			delete sessions[i].token;
-			const ss = ef.generate_payload(ss_token);
-			payload.push({...sessions[i], ...ss});
-		}
-		res.send(JSON.stringify(payload));
-	});
-
-	app.post("/api/sessions", async function(req, res){
-		const body = req.body;
-		const auth = req.headers.authorization;
-		const id = token.decode_jwt(auth).userId;
-		const tokens = body.token;
-		if(!token.is_all_ok(auth))
-			return res.status(401).send();
-		const client = new lib_sessions.Sessions();
-		await client.connect();
-		await client.add(id, tokens);
-		res.send();
 	});
 	
 	app.all("*", (req, res) => {

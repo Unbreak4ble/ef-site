@@ -4,7 +4,7 @@ FROM debian_up:latest
 
 EXPOSE $port
 
-WORKDIR /home/api_me_session
+WORKDIR /home/api_events
 
 COPY . ./
 

@@ -24,7 +24,7 @@ class Client {
 		let session_json = JSON.parse(sessions);
 		let id = token.rand_id();
 		let userToken = token.encode_jwt({userId: id, name: name});
-		session_json.sessions.push({id: id, name: name, password: value, token: userToken});
+		session_json.sessions.push({id: id, name: name, password: value, token: userToken, sessions: []});
 		let sessions_back = JSON.stringify(session_json);
 		await client.set("session", sessions_back);
 		return userToken;
@@ -54,9 +54,7 @@ class Client {
 		for(let i=0; i<session_json.sessions.length; i++){
 			if(session_json.sessions[i].id == id) {
 				for(let key in value){
-					if(Object.hasOwn(session_json.sessions[i], key)){
-						session_json.sessions[i][key] = value[key];
-					}
+					session_json.sessions[i][key] = value[key];
 				}
 			}
 		}
@@ -90,7 +88,7 @@ class Client {
 		for(let ss in session_json){
 			let session = session_json[ss];
 			if(session.id == id)
-				return session.value;
+				return session;
 		}
 		return null;
 	};

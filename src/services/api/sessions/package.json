@@ -2,7 +2,7 @@
   "name": "website",
   "version": "1.0.0",
   "description": "",
-  "main": "server/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,8 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-		"ws": "latest",
-		"redis": "latest",
+    "cors": "latest",
+   	"cookie-parser": "latest",
+    "jwt-decode": "latest",
+    "jwt-encode": "latest",
+    "redis": "latest",
+    "yaml": "latest",
+    "axios": "0.27.2",
+    "http-proxy-middleware": "latest",
     "express": "^4.18.2"
-  }
+	}
 }

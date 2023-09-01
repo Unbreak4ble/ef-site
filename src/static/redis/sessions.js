@@ -12,16 +12,44 @@ class Sessions {
 		client.handleKey("sessions");
 		this.client = client;
 	}
-	
-	add = async(id, ss_token) => {
+
+	get = async(id) => {
 		let sessions = await this.client.get();
-		sessions[id] = sessions[id] || [];
-		sessions[id].push({id: token.rand_id(), token: ss_token, begin_time: 0, activites_done: 0, current_activity: ""});
+		let session = sessions.filter(x => x.id == id);
+		session ??= session[0];
+		return session;
+	}
+	
+	add = async(ss_token) => {
+		let sessions = await this.client.get();
+		const id = token.rand_id();
+		sessions.push({id: id, token: ss_token, begin_time: 0, activites_done: 0, current_activity: ""});
+		await this.client.set(JSON.stringify(sessions));
+		return id;
+	}
+
+	update = async(id, opts) => {
+		let sessions = await this.client.get();
+		for(let i=0; i<sessions.length; i++){
+			if(sessions[i].id == id){
+				for(let key in opts){
+					sessions[i][key] = opts[key];
+				}
+			}
+		}
 		await this.client.set(JSON.stringify(sessions));
 	}
 
-	remove = async(userId, id) => {
-
+	remove = async(id) => {
+		let sessions = await this.client.get();
+		for(let i=0; i<sessions.length; i++){
+			if(sessions[i].id == id){
+				sessions.splice(i, 1);
+				return true;
+			}
+		}
+		await this.client.set(JSON.stringify(sessions));
+		return false;
 	}
 }
 

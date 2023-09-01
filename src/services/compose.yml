@@ -20,11 +20,30 @@ services:
       - "./web/public/:/home/web/public"
       - "../static/:/home/web/static"
 
-  api_service:
-    build: ./api/
-    hostname: api_service
-    container_name: api_service
+  api_sessions:
+    build: ./api/sessions
+    hostname: api_sessions
+    container_name: api_sessions
     networks:
       - mainet
     volumes:
-      - "../static/:/home/api_service/init/static/"
+      - "../static/:/home/api_sessions/static/"
+
+  api_users:
+    build: ./api/users
+    hostname: api_users
+    container_name: api_users
+    networks:
+      - mainet
+    volumes:
+      - "../static/:/home/api_users/static/"
+  
+  api_events:
+    build: ./api/events
+    hostname: api_events
+    container_name: api_events
+    networks:
+      - mainet
+    volumes:
+      - "../static/:/home/api_events/static/"
+

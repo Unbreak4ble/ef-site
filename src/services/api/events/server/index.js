@@ -1,20 +1,23 @@
 const express = require("express");
+const redis = require("../static/redis/redis.js");
+const websocket = require("./websocket.js");
+const http = require("http");
+
 const app = express();
 const port = 80;
-const redis = require("../redis/redis.js");
+const server = http.createServer(app);
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+app.use(express.json());
+websocket(server);
 
-app.get("/api/events", async (req, res) => {
-	console.log("connec");
-	const connection = await redis.setup();
-	console.log(await connection.client.get("server_startup"));
-	await connection.client.set("clients", 0);
-	res.send("events me");
-});
+app.post("/api/events/job", async (req, res) => {
+	const body = req.body;
+	console.log(body);
+})
 
-app.listen(port, () => console.log("server listening in port " + port));
+server.listen(port, () => console.log("server listening in port " + port));

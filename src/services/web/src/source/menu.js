@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -6,31 +6,33 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { loadSessions } from "./utils.js";
+import { loadSessions, handleEvent, websocket } from "./utils.js";
 
 function Sessions() {
-	const [sessions, setSessions] = useState([]);
-	
+	const sessionsState = useState([]);
+	const [sessions, setSessions] = sessionsState;
+
 	useEffect(() => {
-	  loadSessions(x => {
-			setSessions(x.map(ss => 
-				(
-   	  		<TableRow className="align">
- 	    			<TableCell>{ss.username}</TableCell>
-						<TableCell>{ss.token_expiry_time}</TableCell>
-						<TableCell>{ss.status}</TableCell>
-						<TableCell>{ss.elapsed_time}</TableCell>
-						<TableCell>{ss.activities_done}</TableCell>
-						<TableCell>{ss.current_activity}</TableCell>
-		    	</TableRow>
-	  		)
-			));
+	  loadSessions().then(x => {
+			setSessions(x);
+			handleEvent(x, setSessions);
 		});
 	}, []);
-	
+	console.log("updated");	
 	return (
 		<>
-		{sessions}
+		{
+			sessions.map(ss => (
+   	  	<TableRow className="align">
+     			<TableCell>{ss.username}</TableCell>
+					<TableCell>{ss.token_expiry_time}</TableCell>
+					<TableCell>{ss.status}</TableCell>
+					<TableCell>{ss.elapsed_time}</TableCell>
+					<TableCell>{ss.activities_done}</TableCell>
+					<TableCell>{ss.current_activity}</TableCell>
+		  	</TableRow>
+	  	))
+		}
 		</>
 	);
 }

@@ -13,7 +13,7 @@ function handle(app) {
 		const path = services[key].build.replace(/^\./g, "").replace(/\/$/g, "");
 		const port = 80;
 		
-		router.use(createProxyMiddleware(path, {target: "http://" + hostname + ":" + port + "/", onError: (err, req, res) => {
+		router.use(createProxyMiddleware(path, {target: "http://" + hostname + ":" + port + "/", ws: true, onError: (err, req, res) => {
 			//res.status(500).send("service is offline");
 			jsonError(res, 503, "service is offline", err);
 		}}));

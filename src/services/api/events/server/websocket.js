@@ -2,10 +2,12 @@ const ws = require("ws");
 
 function con(client){
 	client.on("message", function(msg){
-		let json = {};
+		let json = {token: ""};
 		try{
 			json = JSON.parse(msg);
 		}catch{}
+
+		console.log(json);
 	})
 }
 

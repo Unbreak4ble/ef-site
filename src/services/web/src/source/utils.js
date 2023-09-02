@@ -23,16 +23,15 @@ export function get_time(){
 	return Math.floor(new Date().getTime()/1000);
 }
 
-export function websocket(sessions, setSessions){
+export function websocket(){
 	const service = services["api"];
-	console.log("trying connection:", sessions[0]);
 	const ws = new WebSocket("ws://"+service+":80/api/events");
 	return ws;
 }
 
 export async function handleEvent(sessions, setSessions){
 	const api = services["api"];
-	websocket(sessions, setSessions);
+	console.log(setSessions);
 	setInterval(()=>{
 		for(let i=0; i<sessions.length; i++){
 			let [days, hours, mins, secs] = calcDate(get_time(), +sessions[i].token_expiry);
@@ -40,7 +39,6 @@ export async function handleEvent(sessions, setSessions){
 			[days, hours, mins, secs] = calcDate(+sessions[i].begin_time, get_time());
 			sessions[i].elapsed_time = `${days} / ${hours}:${mins}:${secs}`;
 		}
-		setSessions(sessions);
 	}, 1000);
 };
 

@@ -10,9 +10,9 @@ root.render(
 	<Router>
 	<Routes>
 		<Route path="/web" element={
-	  	<React.StrictMode>
+//	  	<React.StrictMode>
   		  <App />
-		  </React.StrictMode>
+//		  </React.StrictMode>
 		} 
 		/>
 	</Routes>

@@ -30,13 +30,13 @@ class Sessions {
 
 	update = async(id, opts) => {
 		let sessions = await this.client.get();
-		for(let i=0; i<sessions.length; i++){
-			if(sessions[i].id == id){
-				for(let key in opts){
-					sessions[i][key] = opts[key];
-				}
-			}
+		let session = sessions.filter(x => x.id == id);
+		if(session.length == 0){
+			return;
 		}
+		let index = sessions.indexOf(session[0]);
+		Object.assign(sessions[index], opts);
+		
 		await this.client.set(JSON.stringify(sessions));
 	}
 

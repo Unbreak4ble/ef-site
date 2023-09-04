@@ -4,6 +4,7 @@ const port = 80;
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 routing(app);
 

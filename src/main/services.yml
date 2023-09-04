@@ -26,6 +26,8 @@ services:
     container_name: jobs
     networks:
       - mainet
+    volumes:
+      - "../static/:/home/jobs/static"
 
   api_sessions:
     build: ./api/sessions

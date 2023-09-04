@@ -1,4 +1,6 @@
 networks:
   mainet:
     name: service_network
-    external: true
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16

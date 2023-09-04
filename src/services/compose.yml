@@ -20,6 +20,15 @@ services:
       - "./web/public/:/home/web/public"
       - "../static/:/home/web/static"
 
+  jobs:
+    build: ./jobs/
+    hostname: machine_jobs
+    container_name: jobs
+    networks:
+      - mainet
+    volumes:
+      - "../static/:/home/jobs/static"
+
   api_sessions:
     build: ./api/sessions
     hostname: api_sessions

@@ -9,10 +9,8 @@ services:
     restart: unless-stopped
     container_name: main
     networks:
-      - mainet
-    depends_on:
-      - redis_server
-      - webpage
+      mainet:
+        ipv4_address: 172.25.0.100
     volumes:
       - "./static/:/home/ef/static"
 

@@ -19,6 +19,7 @@ async function handle(app) {
 	await client.connect();
 
 	app.get("/api/sessions", async function(req, res){
+		console.log("conencted");
 		const body = req.body;
 		const auth = req.headers.authorization;
 		if(!(body && auth)){

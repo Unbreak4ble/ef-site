@@ -35,6 +35,7 @@ function compare(old, now) {
 
 		for(let key in now_session[0]){
 			if(old_session[0][key] != now_session[0][key]){
+				console.log(old_session[0][key]);
 				points.push(now_session[0]);
 				diff = true;
 				break;
@@ -53,7 +54,6 @@ async function continousDiff(userId, callback){
 		const [diff, point] = compare(old_sessions, now_sessions);
 		if(diff){
 			old_sessions = now_sessions;
-			console.log("sessions updated");
 			for(let session of point)
 				callback(session);
 		}
@@ -75,8 +75,10 @@ function con(client){
 			userId = lib_token.decode_jwt(json.token).userId;
 
 			continousDiff(userId, (content) => {
-				console.log("sending changes");
-				client.send(JSON.stringify(content));
+				const refact = {...content};
+				delete refact.token;
+				console.log("sending change");
+				client.send(JSON.stringify(refact));
 			});
 		}
 	})

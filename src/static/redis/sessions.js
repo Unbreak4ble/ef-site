@@ -23,7 +23,7 @@ class Sessions {
 	add = async(ss_token) => {
 		let sessions = await this.client.get();
 		const id = token.rand_id();
-		sessions.push({id: id, token: ss_token, begin_time: 0, activites_done: 0, current_activity: ""});
+		sessions.push({id: id, token: ss_token, begin_time: 0, activities_done: 0, current_activity: ""});
 		await this.client.set(JSON.stringify(sessions));
 		return id;
 	}

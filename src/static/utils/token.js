@@ -47,7 +47,7 @@ function is_expired(token) {
 	const [,payload] = token.split(".");
 	const decoded = JSON.parse(atob(payload));
 	const current_time = Math.floor(new Date().getTime()/1000);
-	return (payload.exp - current_time) < 0;
+	return (decoded.exp - current_time) < 0;
 }
 
 function is_verified(token) {
@@ -58,6 +58,7 @@ function is_verified(token) {
 
 function is_all_ok(token) {
 	const expired = is_expired(token);
+	console.log(expired);
 	return expired != true;
 }
 

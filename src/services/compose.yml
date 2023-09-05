@@ -4,6 +4,7 @@ services:
     build: ./page/
     hostname: website
     container_name: webpage
+    restart: unless-stopped
     networks:
       - mainet
     volumes:
@@ -13,6 +14,7 @@ services:
     build: ./web/
     hostname: webpage
     container_name: web
+    restart: unless-stopped
     networks:
       - mainet
     volumes:
@@ -24,6 +26,7 @@ services:
     build: ./jobs/
     hostname: machine_jobs
     container_name: jobs
+    restart: always
     networks:
       - mainet
     volumes:
@@ -33,6 +36,7 @@ services:
     build: ./api/sessions
     hostname: api_sessions
     container_name: api_sessions
+    restart: unless-stopped
     networks:
       - mainet
     volumes:
@@ -42,6 +46,7 @@ services:
     build: ./api/users
     hostname: api_users
     container_name: api_users
+    restart: unless-stopped
     networks:
       - mainet
     volumes:
@@ -51,6 +56,7 @@ services:
     build: ./api/events
     hostname: api_events
     container_name: api_events
+    restart: unless-stopped
     networks:
       - mainet
     volumes:

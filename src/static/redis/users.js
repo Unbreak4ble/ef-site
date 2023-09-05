@@ -18,6 +18,10 @@ class Client {
         resolve(connected);
 	});
 
+	close = () => {
+		this.client.quit();
+	}
+
 	session_append = async (name, value) => {
 		const client = this.client;
 		const sessions = await client.get("session");

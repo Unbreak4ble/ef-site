@@ -33,18 +33,18 @@ class Job {
 
 	async run(){
 		let count = 0;
-		this.websocket_send(JSON.stringify({id: this.id, running: true}));
+		this.websocket_send(JSON.stringify({id: this.id, job_status: 1}));
 		this.sessions.update(this.id, {begin_time: get_time()});
 		setInterval(() => {
 			if(this.stop_job) return;
 
-			this.sessions.update(this.id, {activities_done: ++count});
+			this.sessions.update(this.id, {activities_done: ++count, job_status: 1});
 		}, 1000);
 	}
 
 	async stop(){
 		this.stop_job = true;
-		this.websocket_send(JSON.stringify({id: this.id, running: false}));
+		this.sessions.update(this.id, {job_status: 0});
 	}
 
 	/*

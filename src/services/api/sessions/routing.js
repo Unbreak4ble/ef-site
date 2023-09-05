@@ -32,7 +32,7 @@ async function handle(app) {
 		await client.connect();
 		let user = (await client.session_get(id));
 		if(user == void 0){
-			return res.status(401).send("invalid token");
+			return res.status(401).send("user non-registered");
 		}
 		user = (await Promise.all(user.sessions.map(async session_id => {
 			const client_sessions = new lib_sessions.Sessions();

@@ -13,6 +13,10 @@ class Sessions {
 		this.client = client;
 	}
 
+	close = () => {
+		this.client.quit();
+	}
+
 	get = async(id) => {
 		let sessions = await this.client.get();
 		let session = sessions.filter(x => x.id == id);

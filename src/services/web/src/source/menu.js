@@ -18,13 +18,30 @@ class Sessions extends React.Component {
 		super();
 		const upgrade = async () => {
        for(let i=0; i<this.state.sessions.length; i++){
-					this.state.sessions[i].status = this.state.sessions[i].running ? "running" : "stopped";
-					if(!this.state.sessions[i].running) {
+					switch(this.state.sessions[i].job_status){
+						case 0:
+							this.state.sessions[i].status = "stopped"
+						break;
+						case 1:
+							this.state.sessions[i].status = "running"
+						break;
+						case 2:
+							this.state.sessions[i].status = "crashed"
+						break;
+						default:
+							this.state.sessions[i].status = "?"
+						break;
+				}
+					if(this.state.sessions[i].job_status != 1) {
 						continue;
 					}
-          let [days, hours, mins, secs] = calcDate(get_time(), +this.state.sessions[i].token_expiry);
-          this.state.sessions[i].token_expiry_time = `${hours}:${mins}:${secs}`;
-          [days, hours, mins, secs] = calcDate(+this.state.sessions[i].begin_time, get_time());
+					if(+this.state.sessions[i].token_expiry - get_time() > 0){
+	          let [days, hours, mins, secs] = calcDate(get_time(), +this.state.sessions[i].token_expiry);
+  	        this.state.sessions[i].token_expiry_time = `${hours}:${mins}:${secs}`;
+					}else{
+						this.state.sessions[i].token_expiry_time = `00:00:00`;
+					}
+          let [days, hours, mins, secs] = calcDate(+this.state.sessions[i].begin_time, get_time());
         	this.state.sessions[i].elapsed_time = `${days} / ${hours}:${mins}:${secs}`;
 
      		}
@@ -34,26 +51,35 @@ class Sessions extends React.Component {
 		loadSessions().then(sessions => {
 			console.log(sessions);
 			this.setState({sessions: sessions});
-			this.ws = websocket();
+			const connect = () => {
+				this.ws = websocket();
 
-			this.ws.onopen= (ev) => {
-				this.ws.send('{"token": "'+loadCookies().token+'"}');
-			};
+				this.ws.onopen= (ev) => {
+					this.ws.send('{"token": "'+loadCookies().token+'"}');
+				};
 
-			this.ws.onmessage = (msg) => {
-				let json;
-				try{
-					json = JSON.parse(msg.data);
-				}catch{};
-				if(json == void 0) return;
-				for(let i=0; i<this.state.sessions.length; i++){
-					if(this.state.sessions[i].id == json.id){
-						delete json.id;
-						Object.assign(this.state.sessions[i], json);
-						upgrade();
+				this.ws.onmessage = (msg) => {
+					let json;
+					try{
+						json = JSON.parse(msg.data);
+					}catch{};
+					if(json == void 0) return;
+					for(let i=0; i<this.state.sessions.length; i++){
+						if(this.state.sessions[i].id == json.id){
+							delete json.id;
+							Object.assign(this.state.sessions[i], json);
+							upgrade();
+						}
 					}
 				}
+
+				this.ws.onclose = () => {
+					setTimeout(() => {
+						//connect();
+					}, 1000);
+				}
 			}
+			connect();
 
      	const interval = setInterval(upgrade, 1000);
 		});

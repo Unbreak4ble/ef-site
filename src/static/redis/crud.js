@@ -69,6 +69,10 @@ class Crud {
 		const res = await client.get(this.key);
 		return !!res;
 	}
+
+	close = async() => {
+		this.client.quit();
+	}
 };
 
 module.exports = {Crud}

@@ -29,6 +29,13 @@ export function websocket(){
 	return ws;
 }
 
+export async function getJobInfo(id) {
+	const api = services["api"];
+	const response = await axios.get("http://"+api+":80/jobs/info?id="+id);
+	const response_data = response.data;
+	return response_data;
+}
+
 export async function handleEvent(sessions, setSessions){
 	const api = services["api"];
 	console.log(setSessions);

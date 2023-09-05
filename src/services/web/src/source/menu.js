@@ -6,7 +6,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { loadSessions, handleEvent, websocket, get_time, calcDate, loadCookies } from "./utils.js";
+import { loadSessions, handleEvent, websocket, get_time, calcDate, loadCookies, getJobInfo } from "./utils.js";
+
 
 class Sessions extends React.Component {
 	state = {
@@ -15,13 +16,27 @@ class Sessions extends React.Component {
 
 	constructor(){
 		super();
+		const upgrade = async () => {
+       for(let i=0; i<this.state.sessions.length; i++){
+					this.state.sessions[i].status = this.state.sessions[i].running ? "running" : "stopped";
+					if(!this.state.sessions[i].running) {
+						continue;
+					}
+          let [days, hours, mins, secs] = calcDate(get_time(), +this.state.sessions[i].token_expiry);
+          this.state.sessions[i].token_expiry_time = `${hours}:${mins}:${secs}`;
+          [days, hours, mins, secs] = calcDate(+this.state.sessions[i].begin_time, get_time());
+        	this.state.sessions[i].elapsed_time = `${days} / ${hours}:${mins}:${secs}`;
+
+     		}
+				this.setState(this.state);
+		};
+
 		loadSessions().then(sessions => {
 			console.log(sessions);
 			this.setState({sessions: sessions});
 			this.ws = websocket();
 
 			this.ws.onopen= (ev) => {
-				console.log("opneded websocket");
 				this.ws.send('{"token": "'+loadCookies().token+'"}');
 			};
 
@@ -31,27 +46,17 @@ class Sessions extends React.Component {
 					json = JSON.parse(msg.data);
 				}catch{};
 				if(json == void 0) return;
-				console.log("received", json);
 				for(let i=0; i<this.state.sessions.length; i++){
 					if(this.state.sessions[i].id == json.id){
 						delete json.id;
 						Object.assign(this.state.sessions[i], json);
-						this.setState(this.state);
+						upgrade();
 					}
 				}
 			}
 
-     	setInterval(()=>{
-       for(let i=0; i<this.state.sessions.length; i++){
-          let [days, hours, mins, secs] = calcDate(get_time(), +this.state.sessions[i].token_expiry);
-          this.state.sessions[i].token_expiry_time = `${hours}:${mins}:${secs}`;
-          [days, hours, mins, secs] = calcDate(+this.state.sessions[i].begin_time, get_time());
-        	this.state.sessions[i].elapsed_time = `${days} / ${hours}:${mins}:${secs}`;
-     		}
-				this.setState(this.state);
-    	}, 1000);
+     	const interval = setInterval(upgrade, 1000);
 		});
-		console.log("called");
 	}
 	render() {
 		return (
@@ -59,12 +64,12 @@ class Sessions extends React.Component {
 			{
 				this.state.sessions.map(ss => (
 	   	  	<TableRow className="align">
-  	   			<TableCell>{ss.username}</TableCell>
-						<TableCell>{ss.token_expiry_time}</TableCell>
-						<TableCell>{ss.status}</TableCell>
-						<TableCell>{ss.elapsed_time}</TableCell>
-						<TableCell>{ss.activities_done}</TableCell>
-						<TableCell>{ss.current_activity}</TableCell>
+  	   			<TableCell align="left">{ss.username}</TableCell>
+						<TableCell align="right">{ss.token_expiry_time}</TableCell>
+						<TableCell align="right">{ss.status}</TableCell>
+						<TableCell align="right">{ss.elapsed_time}</TableCell>
+						<TableCell align="right">{ss.activities_done}</TableCell>
+						<TableCell align="right">{ss.current_activity}</TableCell>
 			  	</TableRow>
 	  		))
 			}

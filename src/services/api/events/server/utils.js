@@ -34,7 +34,6 @@ function compare(old, now) {
 
                 for(let key in now_session[0]){
                         if(old_session[0][key] != now_session[0][key]){
-                                console.log(old_session[0][key]);
                                 points.push(now_session[0]);
                                 diff = true;
                                 break;
@@ -59,3 +58,4 @@ async function continousDiff(userId, callback){
         }, 1000);
 }
 
+module.exports = { continousDiff, fetchUserSessions, compare};

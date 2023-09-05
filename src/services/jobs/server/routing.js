@@ -61,7 +61,7 @@ async function infoJob(req, res) {
 	
 	let job = workingJobs.filter(x => x.id == id);
 	if(job.length == 0){
-		res.status(404).send('{"running": false}');
+		res.send('{"running": false}');
 		return;
 	}else{
 		job = job[0];

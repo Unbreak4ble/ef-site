@@ -11,11 +11,6 @@
 	color: var(--color);
 }
 
-.Table {
-	left: 0;
-	border: 1px solid var(--border-bg-color);
-}
-
 .navbar {
 	position: relative;
 	background-color: var(--bg-color); /*#36393e;*/
@@ -67,6 +62,63 @@
 	position: relative;
 }
 
+
+.flex {
+	position:	relative;
+	display: flex;
+	width: 100%;
+}
+
+.flex > * {
+	margin: 1%;
+	border: solid gray 1px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 10px;
+	background: #E2DFD2;
+	overflow: hidden;
+	width: 250px;
+	height: 250px;
+}
+
+.container_session {
+	display: flex;
+	position: relative;
+	justify-content: space-between;
+	align-items: end;
+	overflow: hidden;
+	text-align: center;
+}
+
+.container_session > p {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+}
+
+.container_session > ul {
+	position: absolute;
+	right: 0;
+	left: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.append_session {
+}
+
+.append_session:active {
+	background: rgba(0,0,0, 0.5);
+}
+
+.Table {
+	left: 0;
+	border: 1px solid var(--border-bg-color);
+}
+
+
 @keyframes border-expand {
 	from {
 		left: 50%;
@@ -76,4 +128,107 @@
 		left: 0;
 		width: 100%;
 	}
+}
+
+.modal {
+	position: fixed;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background: rgba(0,0,0, 0.3);	
+}
+
+.modal-body {
+	background: white;
+	border: solid 1px black;
+	border-radius: 10px;
+	padding: 1%;
+	width: 80%;
+	height: 80%;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	box-shadow: 1px 1px 20px black;
+	position: relative;
+}
+
+.modal-bar {
+	position: absolute;
+	background: #E2DFD2;
+	width: 100%;
+	padding: 0;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 10%;
+}
+
+.modal-bar > a {
+	font-family: Arial, Helvetica, sans-serif;
+	position: absolute;
+	font-size: 40px;
+	top: 1%;
+	left: 1%;
+}
+
+.modal-bar > .modal-close {
+	position: absolute;
+	right: 1%;
+	top: 10%;
+}
+
+.modal-close:active {
+	animation: rotateAnimation 1s 1;
+}
+
+@keyframes rotateAnimation {
+	from {
+		rotate: 0deg;
+	}
+	to {
+		rotate: 360deg;
+	}
+}
+
+.modal-content {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 11%;
+	left: 0;
+}
+
+.modal-form {
+	width: 100%;
+	height: 100%;
+	position: relative;
+	display: flex;
+	justify-content:center;
+}
+
+#uniqueTextArea {
+	width: 90%;
+	height: 20%;
+	resize: none;
+}
+
+.modal-form-status {
+	position: absolute;
+	top: 30%;	
+}
+
+.button {
+	top: 50%;
+	background: #FAF9F6;
+	position: absolute;
+	padding: 3%;
+	border-radius: 20px;
+	border: none;
+	outline: 3px solid #E2DFD2;
 }

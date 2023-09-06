@@ -1,18 +1,7 @@
 import './styles.css';
 import React from "react";
 import Menu from "./menu.js"
-
-class Account extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-	render() {
-		return (
-			<div>
-			</div>
-		);
-	}
-}
+import Account from "./account.js";
 
 function change_spa([content, setContent], type) {
 	if(type == "acc")

@@ -6,10 +6,16 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { loadSessions, handleEvent, websocket, get_time, calcDate, loadCookies, getJobInfo } from "./utils.js";
+import { loadSessions, handleEvent, websocket, get_time, calcDate, loadCookies, getJobInfo, pushSession } from "./utils.js";
 
 
 const modalContext = createContext("none");
+
+async function addSession(state, value){
+	const [, setStatus] = state;
+	const status = await pushSession(value);
+	setStatus(status);
+}
 
 function Session({username, expiration, status}){
 	return (
@@ -97,6 +103,8 @@ class Sessions extends React.Component {
 
 function SessionModal(){
 	const [context, setContext] = useContext(modalContext);
+	const statusState = useState("none");
+	const textRef = useRef();
 	
 	return (
 		<div className="modal" style={{display: context.modal}}>
@@ -111,9 +119,9 @@ function SessionModal(){
 				</div>
 				<div className="modal-content">
 					<div className="modal-form">
-						<textarea required id="uniqueTextArea" placeholder="put token here"></textarea>
-						<a className="modal-form-status">ready</a>
-						<button className="button">add session</button>
+						<textarea ref={textRef} required id="uniqueTextArea" placeholder="put token here"></textarea>
+						<a className="modal-form-status">{statusState[0]}</a>
+						<button className="button" onClick={() => addSession(statusState, textRef.current.value)}>add session</button>
 					</div>
 				</div>
 			</div>

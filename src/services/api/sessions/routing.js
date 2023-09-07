@@ -56,8 +56,14 @@ async function handle(app) {
 		const auth = req.headers.authorization;
 		const id = token.decode_jwt(auth).userId;
 		const tokens = body.token;
+
+		if(tokens == void 0 || !tokens.length){
+			return res.status(400).send("token not found");
+		}
+
 		if(!token.is_all_ok(auth))
 			return res.status(401).send();
+
 		const ss_client = new lib_sessions.Sessions();
 		await ss_client.connect();
 		const ss_id = await ss_client.add(tokens);
@@ -65,12 +71,15 @@ async function handle(app) {
 		const user_client = new session.Client();
 		await user_client.connect();
 		const user = await user_client.session_get(id);
+		
 		if(user == void 0){
 			return res.status(401).send("invalid token");
 		}
+
 		user.sessions = (user.sessions || []);
 		user.sessions.push(ss_id);
 		await user_client.session_update(id, user);
+
 		res.send();
 	});
 	

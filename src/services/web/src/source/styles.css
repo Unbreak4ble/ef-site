@@ -232,3 +232,7 @@
 	border: none;
 	outline: 3px solid #E2DFD2;
 }
+
+.button:active {
+	background: rgba(0,0,0, 0.2);
+}

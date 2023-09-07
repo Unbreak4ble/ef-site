@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import useWebSocket from 'react-use-websocket';
 import services from "./services.js";
 import { useRef } from 'react';
+import { API_EVENTS, API_SESSIONS, JOBS_INFO } from "./apis.js"
 
 export function calcDate(min, max){
 	const diff = max-min;
@@ -25,13 +26,13 @@ export function get_time(){
 
 export function websocket(){
 	const service = services["api"];
-	const ws = new WebSocket("ws://"+service+":80/api/events");
+	const ws = new WebSocket(API_EVENTS);
 	return ws;
 }
 
 export async function getJobInfo(id) {
 	const api = services["api"];
-	const response = await axios.get("http://"+api+":80/jobs/info?id="+id);
+	const response = await axios.get(JOBS_INFO+"?id="+id);
 	const response_data = response.data;
 	return response_data;
 }
@@ -54,10 +55,25 @@ export async function loadSessions(cbe) {
 	console.log("trying: ", api);
 	let response = [];
 	try{
-		response = (await axios.get("http://"+api+":80/api/sessions", { headers: {
+		response = (await axios.get(API_SESSIONS, { headers: {
 			authorization: loadCookies().token
 		}})).data;
 	}catch{}
 	return response;
 }
 
+export async function pushSession(token) {
+	const api = services["api"];
+	const data = await new Promise((resolve) => axios({
+		method:"POST",
+		url: API_SESSIONS,
+		headers: {
+			"content-type": "application/json",
+			authorization: loadCookies().token
+		},
+		data: {
+			token: token
+		}
+	}).then(() => resolve("added")).catch(() => resolve("failed to add")));
+	return data;
+}

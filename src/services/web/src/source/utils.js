@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import useWebSocket from 'react-use-websocket';
 import services from "./services.js";
 import { useRef } from 'react';
-import { API_EVENTS, API_SESSIONS, JOBS_INFO } from "./apis.js"
+import { API_EVENTS, API_SESSIONS, JOBS_INFO, JOBS_START, JOBS_STOP, API_USERS_VALIDATE } from "./apis.js"
 
 export function calcDate(min, max){
 	const diff = max-min;
@@ -90,4 +90,48 @@ export async function deleteSession(id) {
 		}
 	}).then(() => resolve(true)).catch(() => resolve(false)));
 	return result;
+}
+
+export async function stopJob(id) {
+	const result = await new Promise(resolve => axios({
+		method: "POST",
+		url: JOBS_STOP,
+		headers: {
+			"content-type": "application/json",
+			authorization: loadCookies().token
+		},
+		data: {
+			id: id
+		}
+	}).then(() => resolve(true)).catch(() => resolve(false)));
+	return result;
+}
+
+export async function startJob(id) {
+	const result = await new Promise(resolve => axios({
+		method: "POST",
+		url: JOBS_START,
+		headers: {
+			"content-type": "application/json",
+			authorization: loadCookies().token
+		},
+		data: {
+			id: id
+		}
+	}).then(() => resolve(true)).catch(() => resolve(false)));
+	return result;
+}
+
+export async function validateUser(){
+		const result = (await axios({
+		method: "POST",
+		url: API_USERS_VALIDATE,
+		headers: {
+			"content-type": "application/json"
+		},
+		data: {
+			token: loadCookies().token
+		}
+	})).data;
+	return result === "true";
 }

@@ -11,7 +11,7 @@ root.render(
 	<Routes>
 		<Route path="/web" element={
 //	  	<React.StrictMode>
-  		  <App />
+	 	 		  <App />
 //		  </React.StrictMode>
 		} 
 		/>

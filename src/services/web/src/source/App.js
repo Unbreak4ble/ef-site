@@ -2,6 +2,7 @@ import './styles.css';
 import React from "react";
 import Menu from "./menu.js"
 import Account from "./account.js";
+import {validateUser} from "./utils";
 
 function change_spa([content, setContent], type) {
 	if(type == "acc")
@@ -27,10 +28,16 @@ function NavBar({ spa }) {
 	);
 }
 
+async function checkUser(spa) {
+	const [content, setContent] = spa;
+}
+
 function App() {
 	const spa = React.useState(<Menu/>);
 	const [content, setContent] = spa;
-  return (
+	checkUser(spa);
+
+	return (
 		<>
   		<NavBar spa={ spa }/>
 			<div className="spa"> { content }</div>

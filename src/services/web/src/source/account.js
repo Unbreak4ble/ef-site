@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { loadSessions, handleEvent, websocket, get_time, calcDate, loadCookies, getJobInfo, pushSession, deleteSession } from "./utils.js";
+import { loadSessions, handleEvent, websocket, get_time, calcDate, loadCookies, getJobInfo, pushSession, deleteSession, startJob, stopJob } from "./utils.js";
 
 const modalContext = createContext("none");
 
@@ -20,12 +20,11 @@ async function addSession(state, textRef){
 
 function setStatusClass(status){
 	let status_class = "";
-	status="stopped"
 	switch(status){
 		case "running":
 			status_class += " session_run_button";
 		break;
-		case "stopped":
+		default:
 			status_class += " session_stop_button";
 		break;
 	}
@@ -37,11 +36,16 @@ function Session({username, expiration, status, id}){
 	const [classes, setClasses] = useState("vertical_space_between session_delete_button");
 	const [stopClasses, setStopClasses] = useState("session_stop_button");
 	const [mainClass, setMainClass] = useState("container_session");
+	const isRunning = status === "running";
+	
+	if(status == void 0){
+		return <></>;
+	}
 	
 	const addClass = (val) => {
 		setClasses(classes+" "+val);
 	};
-	
+		
 	const deleteThisSession = async() => {
 		setClasses("deleted_session");
 		const deleted = await deleteSession(id);
@@ -52,7 +56,18 @@ function Session({username, expiration, status, id}){
 	}
 
 	const stopThisSession = async() => {
+		const job_status = await stopJob(id);
+	}
 
+	const runThisSession = async() => {
+		const job_status = await startJob(id);
+	}
+
+	const handleThisSession = async() => {
+		if(isRunning)
+			stopThisSession();
+		else
+			runThisSession();
 	}
 	
 	return (
@@ -66,7 +81,7 @@ function Session({username, expiration, status, id}){
 			<div className={classes} onClick={() => deleteThisSession() }>
 			</div>
 			<div className="container_fill_animation"></div>
-			<div className={"vertical_space_between session_status_button " +setStatusClass(status)} onClick={() => stopThisSession() }>
+			<div className={"vertical_space_between session_status_button " +setStatusClass(status)} onClick={() => handleThisSession() }>
 			</div>
 			<div className="container_fill_animatione"></div>
 	</div>

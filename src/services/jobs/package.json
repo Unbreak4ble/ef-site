@@ -12,6 +12,7 @@
   "dependencies": {
 		"axios": "0.27",
 		"ws": "latest",
+		"cors": "latest",
 		"redis": "latest",
 		"jwt-encode": "latest",
 		"jwt-decode": "latest",

@@ -46,14 +46,16 @@ class Sessions {
 
 	remove = async(id) => {
 		let sessions = await this.client.get();
+		let result = false;
 		for(let i=0; i<sessions.length; i++){
 			if(sessions[i].id == id){
 				sessions.splice(i, 1);
-				return true;
+				result = true;
+				break;
 			}
 		}
 		await this.client.set(JSON.stringify(sessions));
-		return false;
+		return result;
 	}
 }
 

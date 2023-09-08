@@ -3,6 +3,8 @@
 	--bg-color: #fbfbf0;
 	--border-bg-color: Gainsboro;
 	--main-bg-color: white;
+	--green: #28B463;
+	--red: rgb(255, 10, 30); 
 }
 
 .spa {
@@ -109,18 +111,21 @@
 	bottom: 30%;
 }
 
-.vertical_space_between {
-	position: absolute;
-	background: white;
+.container_session_status {
+	position: relative;
 	width: 100%;
-	height: 20%;
-	bottom: 0;
+	height: 5%;
+	top: 20%;
+	background: gray;
+	
 }
 
-.vertical_space_between:hover {
-	animation: deleteSessionAnimation 0.2s 1;
-	animation-timing-function: linear;
-	animation-fill-mode: forwards;
+.container_session_status_running {
+	background: #28B463 !important;
+}
+
+.container_session_status_stop {
+	background: #E74C3C !important;
 }
 
 .deleted_session {
@@ -141,6 +146,117 @@
 	left: 0;
 	right: 0;
 }
+/*
+.session_stop_button {
+	position: absolute;
+	background: white;
+	width: 50%;
+	height: 20%;
+	bottom: 0;
+	right: 0;
+}
+
+.session_stop_button > a {
+	position: absolute;
+	font-size: 20px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.session_stop_button:hover {
+	z-index: 1;
+}*/
+.container_fill_animatione {
+	position: absolute;
+	width: 100%;
+	height: 0;
+	bottom: 20%;
+}
+.container_fill_animation {
+	position: absolute;
+	background: red;
+	width: 100%;
+	height: 0;
+	bottom: 20%;
+}
+
+.session_status_button {
+	left: auto !important;
+	right: 0;
+}
+
+.session_stop_button {
+	background: var(--red) !important;
+}
+.session_stop_button::before {
+	content: "stopped";
+	font-size: 20px !important;
+}
+.session_stop_button:hover::before {
+	content: "run";
+}
+.session_stop_button:hover {
+	background: var(--green) !important;
+}
+.session_stop_button:hover + .container_fill_animatione {
+	background: var(--green) !important;
+}
+
+.session_run_button {
+	background: var(--green) !important;
+}
+.session_run_button:hover {
+	background: var(--red) !important;
+}
+.session_run_button:hover + .container_fill_animatione {
+	background: var(--red) !important;
+}
+.session_run_button::before {
+	content: "running";
+	font-size: 20px !important;
+}
+.session_run_button:hover::before {
+	content: "stop";
+}
+
+.session_status_button:hover + .container_fill_animatione {
+	z-index: 1;
+	animation: deleteSessionAnimation 0.1s 1;
+	animation-timing-function: linear;
+	animation-fill-mode: forwards;
+
+}
+
+.session_delete_button {
+	background: var(--red) !important;
+}
+.session_delete_button::before {
+	content: "delete";
+	font-size: 20px !important;
+}
+
+.vertical_space_between {
+	position: absolute;
+	background: white;
+	width: 50%;
+	height: 20%;
+	bottom: 0;
+	left: 0;
+}
+
+.vertical_space_between:hover {
+	background: rgb(255, 10, 30);
+}
+
+.vertical_space_between:hover + .container_fill_animation {
+	z-index: 1;
+	background: rgb(255, 10, 30);
+	animation: deleteSessionAnimation 0.1s 1;
+	animation-timing-function: linear;
+	animation-fill-mode: forwards;
+}
+
 
 .vertical_space_between > a {
 	position: absolute;
@@ -150,13 +266,9 @@
 	right: 0;
 }
 
-.hide {
-	display: none;
-}
-
 @keyframes successDeleteAnimation {
 	from {
-		height: 80%;
+		height: 60%;
 		background: rgb(255, 10, 30);
 	}
 	to {
@@ -170,12 +282,15 @@
 	}
 	to {
 		width: 100%;
-		height: 80%;
+		height: 60%;
 		color: white;
 		font-size: 30px;
 		font-family: "Arial";
-		background: rgb(255, 10, 30);
 	}
+}
+
+.hide {
+	display: none;
 }
 
 .container_session_top {
@@ -183,7 +298,8 @@
 	background: #fffff0;
 }
 
-.append_session {
+.append_session:hover {
+	background: rgba(0,0,0, 0.2);
 }
 
 .append_session:active {

@@ -8,17 +8,34 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { loadSessions, handleEvent, websocket, get_time, calcDate, loadCookies, getJobInfo, pushSession, deleteSession } from "./utils.js";
 
-
 const modalContext = createContext("none");
 
-async function addSession(state, value){
+async function addSession(state, textRef){
 	const [, setStatus] = state;
-	const status = await pushSession(value);
+	setStatus("");
+	const status = await pushSession(textRef.value);
+	textRef.value = "";
 	setStatus(status);
 }
 
+function setStatusClass(status){
+	let status_class = "";
+	status="stopped"
+	switch(status){
+		case "running":
+			status_class += " session_run_button";
+		break;
+		case "stopped":
+			status_class += " session_stop_button";
+		break;
+	}
+	
+	return status_class
+}
+
 function Session({username, expiration, status, id}){
-	const [classes, setClasses] = useState("vertical_space_between");
+	const [classes, setClasses] = useState("vertical_space_between session_delete_button");
+	const [stopClasses, setStopClasses] = useState("session_stop_button");
 	const [mainClass, setMainClass] = useState("container_session");
 	
 	const addClass = (val) => {
@@ -33,6 +50,10 @@ function Session({username, expiration, status, id}){
 		else
 			setClasses("vertical_space_between");
 	}
+
+	const stopThisSession = async() => {
+
+	}
 	
 	return (
 		<div className={mainClass}>
@@ -41,11 +62,13 @@ function Session({username, expiration, status, id}){
 			</div>
 			<ul>
 				<li>token expiry: {expiration ?? "?"}</li>
-				<li>status: {status ?? "?"}</li>
 			</ul>
 			<div className={classes} onClick={() => deleteThisSession() }>
-				<a>Delete</a>
 			</div>
+			<div className="container_fill_animation"></div>
+			<div className={"vertical_space_between session_status_button " +setStatusClass(status)} onClick={() => stopThisSession() }>
+			</div>
+			<div className="container_fill_animatione"></div>
 	</div>
 	);
 }
@@ -58,23 +81,23 @@ class Sessions extends React.Component {
 	constructor(){
 		super();
 		const upgrade = async () => {
-       for(let i=0; i<this.state.sessions.length; i++){
-					switch(this.state.sessions[i].job_status){
-						case 0:
-							this.state.sessions[i].status = "stopped"
-						break;
-						case 1:
-							this.state.sessions[i].status = "running"
-						break;
-						case 2:
-							this.state.sessions[i].status = "crashed"
-						break;
-						default:
-							this.state.sessions[i].status = "?"
-						break;
-					}
-     		}
-				this.setState(this.state);
+    	for(let i=0; i<this.state.sessions.length; i++){
+				switch(this.state.sessions[i].job_status){
+					case 0:
+						this.state.sessions[i].status = "stopped"
+					break;
+					case 1:
+						this.state.sessions[i].status = "running"
+					break;
+					case 2:
+						this.state.sessions[i].status = "crashed"
+					break;
+					default:
+						this.state.sessions[i].status = "?"
+					break;
+				}
+     	}
+			this.setState(this.state);
 		};
 
 		loadSessions().then(sessions => {
@@ -126,7 +149,7 @@ class Sessions extends React.Component {
 
 function SessionModal(){
 	const [context, setContext] = useContext(modalContext);
-	const statusState = useState("none");
+	const statusState = useState("");
 	const textRef = useRef();
 	
 	return (
@@ -144,7 +167,7 @@ function SessionModal(){
 					<div className="modal-form">
 						<textarea ref={textRef} required id="uniqueTextArea" placeholder="put token here"></textarea>
 						<a className="modal-form-status">{statusState[0]}</a>
-						<button className="button" onClick={() => addSession(statusState, textRef.current.value)}>add session</button>
+						<button className="button" onClick={() => addSession(statusState, textRef.current)}>add session</button>
 					</div>
 				</div>
 			</div>

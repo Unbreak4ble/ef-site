@@ -111,13 +111,16 @@ async function handle(app) {
 			return res.status(406).send("not found");
 		}
 		const idx = user.sessions.indexOf(sess[0]);
-		console.log("deleting ", idx);
+		console.log("deleting ", id, idx);
 		const ss_client = new lib_sessions.Sessions();
 		await ss_client.connect();
-		await ss_client.remove(id);
+		const remove_status = await ss_client.remove(id);
+		if(!remove_status){
+			return res.status(500).send("failed to remove");
+		}
 		user.sessions.splice(idx, 1);
 		await user_client.session_update(userId, user);
-
+		
 		res.send();
 	});
 	

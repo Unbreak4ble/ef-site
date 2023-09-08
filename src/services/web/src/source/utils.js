@@ -63,7 +63,6 @@ export async function loadSessions(cbe) {
 }
 
 export async function pushSession(token) {
-	const api = services["api"];
 	const data = await new Promise((resolve) => axios({
 		method:"POST",
 		url: API_SESSIONS,
@@ -76,4 +75,19 @@ export async function pushSession(token) {
 		}
 	}).then(() => resolve("added")).catch(() => resolve("failed to add")));
 	return data;
+}
+
+export async function deleteSession(id) {
+	const result = await new Promise(resolve => axios({
+		method: "DELETE",
+		url: API_SESSIONS,
+		headers: {
+			"content-type": "application/json",
+			authorization: loadCookies().token
+		},
+		data: {
+			id: id
+		}
+	}).then(() => resolve(true)).catch(() => resolve(false)));
+	return result;
 }

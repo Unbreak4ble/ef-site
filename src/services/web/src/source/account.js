@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { loadSessions, handleEvent, websocket, get_time, calcDate, loadCookies, getJobInfo, pushSession } from "./utils.js";
+import { loadSessions, handleEvent, websocket, get_time, calcDate, loadCookies, getJobInfo, pushSession, deleteSession } from "./utils.js";
 
 
 const modalContext = createContext("none");
@@ -17,15 +17,36 @@ async function addSession(state, value){
 	setStatus(status);
 }
 
-function Session({username, expiration, status}){
+function Session({username, expiration, status, id}){
+	const [classes, setClasses] = useState("vertical_space_between");
+	const [mainClass, setMainClass] = useState("container_session");
+	
+	const addClass = (val) => {
+		setClasses(classes+" "+val);
+	};
+	
+	const deleteThisSession = async() => {
+		setClasses("deleted_session");
+		const deleted = await deleteSession(id);
+		if(deleted)
+			setMainClass("hide");
+		else
+			setClasses("vertical_space_between");
+	}
+	
 	return (
-		<div className="container_session">
-	  	<p>username: {username ?? "?"}</p>
+		<div className={mainClass}>
+			<div className="container_session_top">
+		  	<p>{username ?? "?"}</p>
+			</div>
 			<ul>
 				<li>token expiry: {expiration ?? "?"}</li>
 				<li>status: {status ?? "?"}</li>
 			</ul>
-		</div>
+			<div className={classes} onClick={() => deleteThisSession() }>
+				<a>Delete</a>
+			</div>
+	</div>
 	);
 }
 
@@ -71,13 +92,15 @@ class Sessions extends React.Component {
 						json = JSON.parse(msg.data);
 					}catch{};
 					if(json == void 0) return;
-					for(let i=0; i<this.state.sessions.length; i++){
-						if(this.state.sessions[i].id == json.id){
-							delete json.id;
-							Object.assign(this.state.sessions[i], json);
-							upgrade();
-						}
+
+					const session = this.state.sessions.filter(x => x.id == json.id)[0];
+					if(session){
+						const idx = this.state.sessions.indexOf(session);
+						Object.assign(this.state.sessions[idx], json);
+					}else if(json.id != void 0){
+						this.state.sessions.push(json);
 					}
+					upgrade();
 				}
 			}
 			connect();
@@ -93,7 +116,7 @@ class Sessions extends React.Component {
 					const options = { year: 'numeric', month: 'long', day: 'numeric', hour: "numeric" };
 					const time = (new Date(ss.token_expiry*1000)).toLocaleDateString("en-US", options);
 
-					return (<Session username={ss.username} expiration={time} status={ss.status}/>);
+					return (<Session id={ss.id} username={ss.username} expiration={time} status={ss.status}/>);
 				})
 			}
 			</>

@@ -1,5 +1,6 @@
 const ws = require("ws");
 const lib_token = require("../static/utils/token.js");
+const lib_ef = require("../static/utils/ef-utils.js");
 const {fetchUserSessions, compare, continousDiff} = require("./utils");
 
 let server;
@@ -41,6 +42,7 @@ function con(client){
 
 			continousDiff(userId, (content) => {
 				const refact = {...content};
+				Object.assign(refact, lib_ef.generate_payload(refact.token));
 				delete refact.token;
 				client.send(JSON.stringify(refact));
 			});

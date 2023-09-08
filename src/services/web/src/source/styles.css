@@ -83,19 +83,21 @@
 }
 
 .container_session {
-	display: flex;
+	display: block;
 	position: relative;
-	justify-content: space-between;
-	align-items: end;
+	/*justify-content: space-between;*/
+	/*align-items: end;*/
 	overflow: hidden;
 	text-align: center;
 }
 
-.container_session > p {
-	position: absolute;
+.container_session_top {
+	position: absolute !important;
+	width: 100%;
 	top: 0;
-	right: 0;
-	left: 0;
+	padding: 0;
+	margin: 0;
+	height: 20%;
 }
 
 .container_session > ul {
@@ -104,6 +106,81 @@
 	left: 0;
 	padding: 0;
 	list-style: none;
+	bottom: 30%;
+}
+
+.vertical_space_between {
+	position: absolute;
+	background: white;
+	width: 100%;
+	height: 20%;
+	bottom: 0;
+}
+
+.vertical_space_between:hover {
+	animation: deleteSessionAnimation 0.2s 1;
+	animation-timing-function: linear;
+	animation-fill-mode: forwards;
+}
+
+.deleted_session {
+	position: absolute;
+	background: white;
+	width: 100%;
+	height: 20%;
+	bottom: 0 !important;
+	animation: successDeleteAnimation 0.1s 1;
+	animation-timing-function: linear;
+	animation-fill-mode: forwards;
+}
+
+.deleted_session > a {
+	position: absolute;
+	font-size: 20px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.vertical_space_between > a {
+	position: absolute;
+	font-size: 20px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.hide {
+	display: none;
+}
+
+@keyframes successDeleteAnimation {
+	from {
+		height: 80%;
+		background: rgb(255, 10, 30);
+	}
+	to {
+		background: rgb(255, 10, 30);
+		height: 100%;
+	}
+}
+
+@keyframes deleteSessionAnimation {
+	from {
+	}
+	to {
+		width: 100%;
+		height: 80%;
+		color: white;
+		font-size: 30px;
+		font-family: "Arial";
+		background: rgb(255, 10, 30);
+	}
+}
+
+.container_session_top {
+	position: relative;
+	background: #fffff0;
 }
 
 .append_session {

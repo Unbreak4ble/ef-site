@@ -42,8 +42,9 @@ async function handle(app) {
 		}))).map(x => x[0]);
 		let payload = [];
 		for(let i=0; i<user.length; i++){
+			if(user[i] == void 0) continue;
 			const ss_token = user[i].token;
-			if(!ss_token) continue;
+			if(ss_token == void 0) continue;
 			delete user[i].token;
 			const ss = ef.generate_payload(ss_token);
 			payload.push({...user[i], ...ss});
@@ -79,6 +80,43 @@ async function handle(app) {
 		user.sessions = (user.sessions || []);
 		user.sessions.push(ss_id);
 		await user_client.session_update(id, user);
+
+		res.send();
+	});
+
+	app.delete("/api/sessions", async function(req, res){
+		const body = req.body;
+		const auth = req.headers.authorization;
+		const userId = token.decode_jwt(auth).userId;
+		const id = body.id;
+		
+		if(id == void 0 || !id.length){
+			return res.status(400).send("check id");
+		}
+		
+		if(!token.is_all_ok(auth))
+			return res.status(401).send();
+
+		const user_client = new session.Client();
+		await user_client.connect();
+		const user = await user_client.session_get(userId);
+		
+		if(user == void 0){
+			return res.status(401).send("invalid token");
+		}
+
+		const sess = user.sessions.filter(x => x == id);
+		
+		if(!sess.length){
+			return res.status(406).send("not found");
+		}
+		const idx = user.sessions.indexOf(sess[0]);
+		console.log("deleting ", idx);
+		const ss_client = new lib_sessions.Sessions();
+		await ss_client.connect();
+		await ss_client.remove(id);
+		user.sessions.splice(idx, 1);
+		await user_client.session_update(userId, user);
 
 		res.send();
 	});

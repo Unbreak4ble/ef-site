@@ -93,8 +93,9 @@ class Sessions extends React.Component {
 		sessions: []
 	}
 
-	constructor(){
+	constructor({pushEvent}){
 		super();
+		console.log("initi", pushEvent);
 		const upgrade = async () => {
     	for(let i=0; i<this.state.sessions.length; i++){
 				switch(this.state.sessions[i].job_status){
@@ -117,20 +118,7 @@ class Sessions extends React.Component {
 
 		loadSessions().then(sessions => {
 			this.setState({sessions: sessions});
-			const connect = () => {
-				this.ws = websocket();
-
-				this.ws.onopen= (ev) => {
-					this.ws.send('{"token": "'+loadCookies().token+'"}');
-				};
-
-				this.ws.onmessage = (msg) => {
-					let json;
-					try{
-						json = JSON.parse(msg.data);
-					}catch{};
-					if(json == void 0) return;
-
+			pushEvent((json) => {
 					const session = this.state.sessions.filter(x => x.id == json.id)[0];
 					if(session){
 						const idx = this.state.sessions.indexOf(session);
@@ -139,9 +127,7 @@ class Sessions extends React.Component {
 						this.state.sessions.push(json);
 					}
 					upgrade();
-				}
-			}
-			connect();
+			});
 
      	const interval = setInterval(upgrade, 1000);
 		});
@@ -196,6 +182,7 @@ class Account extends React.Component {
 				}
         constructor(props) {
           super(props);
+					this.pushEvent = props.pushEvent;
         }
 
 				setstate(value){
@@ -212,7 +199,7 @@ class Account extends React.Component {
 											<div className="append_session" onClick={() => this.setState({ modal: "flex"}) }>
 												<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
 											</div>
-			  	    				<Sessions/>
+			  	    				<Sessions pushEvent={this.pushEvent}/>
 										</div>
 									</>
         );

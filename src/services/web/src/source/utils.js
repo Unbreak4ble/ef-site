@@ -25,7 +25,6 @@ export function get_time(){
 }
 
 export function websocket(){
-	const service = services["api"];
 	const ws = new WebSocket(API_EVENTS);
 	return ws;
 }
@@ -133,5 +132,33 @@ export async function validateUser(){
 			token: loadCookies().token
 		}
 	})).data;
-	return result === "true";
+	console.log(result == "true");
+	return result;
+}
+
+export function initEvents(){
+	const ws = websocket();
+	const instance = {
+		clients: [],
+		ws: ws,
+		pushClient: (callback) => {
+			instance.clients.push(callback);
+		}
+	};
+	console.log("websocket created");
+ 	ws.onopen= (ev) => {
+  	ws.send('{"token": "'+loadCookies().token+'"}');
+  };
+
+	ws.onmessage = (msg) => {
+    let json;
+    try{
+    	json = JSON.parse(msg.data);
+    }catch{};
+    if(json == void 0) return;
+		
+		instance.clients.forEach((callback) => (callback != void 0 && callback(json)));
+	}
+
+	return instance;
 }

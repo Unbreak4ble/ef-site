@@ -14,7 +14,7 @@ class Sessions extends React.Component {
 		sessions: []
 	}
 
-	constructor(){
+	constructor({pushEvent}){
 		super();
 		const upgrade = async () => {
        for(let i=0; i<this.state.sessions.length; i++){
@@ -51,19 +51,7 @@ class Sessions extends React.Component {
 		loadSessions().then(sessions => {
 			console.log(sessions);
 			this.setState({sessions: sessions});
-			const connect = () => {
-				this.ws = websocket();
-
-				this.ws.onopen= (ev) => {
-					this.ws.send('{"token": "'+loadCookies().token+'"}');
-				};
-
-				this.ws.onmessage = (msg) => {
-					let json;
-					try{
-						json = JSON.parse(msg.data);
-					}catch{};
-					if(json == void 0) return;
+			pushEvent((json) => {
 					for(let i=0; i<this.state.sessions.length; i++){
 						if(this.state.sessions[i].id == json.id){
 							delete json.id;
@@ -71,15 +59,7 @@ class Sessions extends React.Component {
 							upgrade();
 						}
 					}
-				}
-
-				this.ws.onclose = () => {
-					setTimeout(() => {
-						//connect();
-					}, 1000);
-				}
-			}
-			connect();
+			});
 
      	const interval = setInterval(upgrade, 1000);
 		});
@@ -106,7 +86,8 @@ class Sessions extends React.Component {
 
 class Menu extends React.Component {
         constructor(props) {
-                super(props);
+          super(props);
+					this.pushEvent = props.pushEvent;
         }
 
         render() {
@@ -124,7 +105,7 @@ class Menu extends React.Component {
           </TableRow>
         </TableHead>
         <TableBody>
-        	<Sessions/>
+        	<Sessions pushEvent={this.pushEvent}/>
         </TableBody>
       </Table>
     </TableContainer>

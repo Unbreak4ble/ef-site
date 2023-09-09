@@ -145,8 +145,8 @@ export function initEvents(){
 			instance.clients.push(callback);
 		}
 	};
-	console.log("websocket created");
- 	ws.onopen= (ev) => {
+ 	
+	ws.onopen= (ev) => {
   	ws.send('{"token": "'+loadCookies().token+'"}');
   };
 
@@ -157,7 +157,7 @@ export function initEvents(){
     }catch{};
     if(json == void 0) return;
 		
-		instance.clients.forEach((callback) => (callback != void 0 && callback(json)));
+		instance.clients.forEach((callback) => (callback != void 0 && callback({...json})));
 	}
 
 	return instance;

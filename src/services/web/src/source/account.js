@@ -95,8 +95,7 @@ class Sessions extends React.Component {
 
 	constructor({pushEvent}){
 		super();
-		console.log("initi", pushEvent);
-		const upgrade = async () => {
+		const upgrade = async() => {
     	for(let i=0; i<this.state.sessions.length; i++){
 				switch(this.state.sessions[i].job_status){
 					case 0:
@@ -116,18 +115,20 @@ class Sessions extends React.Component {
 			this.setState(this.state);
 		};
 
+		const onMessage = async(json) => {
+			const session = this.state.sessions.filter(x => x.id == json.id)[0];
+			if(session){
+				const idx = this.state.sessions.indexOf(session);
+				Object.assign(this.state.sessions[idx], json);
+			}else if(json.id != void 0){
+				this.state.sessions.push(json);
+			}
+			upgrade();
+		}
+
 		loadSessions().then(sessions => {
 			this.setState({sessions: sessions});
-			pushEvent((json) => {
-					const session = this.state.sessions.filter(x => x.id == json.id)[0];
-					if(session){
-						const idx = this.state.sessions.indexOf(session);
-						Object.assign(this.state.sessions[idx], json);
-					}else if(json.id != void 0){
-						this.state.sessions.push(json);
-					}
-					upgrade();
-			});
+			pushEvent(onMessage);
 
      	const interval = setInterval(upgrade, 1000);
 		});

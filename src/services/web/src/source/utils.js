@@ -137,28 +137,33 @@ export async function validateUser(){
 }
 
 export function initEvents(){
-	const ws = websocket();
 	const instance = {
 		clients: [],
-		ws: ws,
 		pushClient: (callback) => {
 			instance.clients.push(callback);
 		}
 	};
- 	
-	ws.onopen= (ev) => {
-  	ws.send('{"token": "'+loadCookies().token+'"}');
-  };
+ 	const init = () => {
+		let ws = websocket();
+		ws.onopen= (ev) => {
+  		ws.send('{"token": "'+loadCookies().token+'"}');
+	  };
 
-	ws.onmessage = (msg) => {
-    let json;
-    try{
-    	json = JSON.parse(msg.data);
-    }catch{};
-    if(json == void 0) return;
-		
-		instance.clients.forEach((callback) => (callback != void 0 && callback({...json})));
+		ws.onmessage = (msg) => {
+  	  let json;
+	    try{
+    		json = JSON.parse(msg.data);
+  	  }catch{};
+	    if(json == void 0) return;
+			
+			instance.clients.forEach((callback) => (callback != void 0 && callback({...json})));
+		}
+		ws.onclose = () => {
+			ws = null;
+			setTimeout(init, 3000);
+		}
 	}
+	init();
 
 	return instance;
 }

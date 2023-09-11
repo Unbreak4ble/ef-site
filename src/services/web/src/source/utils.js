@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import useWebSocket from 'react-use-websocket';
 import services from "./services.js";
 import { useRef } from 'react';
-import { API_EVENTS, API_SESSIONS, JOBS_INFO, JOBS_START, JOBS_STOP, API_USERS_VALIDATE } from "./apis.js"
+import { API_EVENTS, API_SESSIONS, JOBS_INFO, JOBS_START, JOBS_STOP, API_USERS_VALIDATE, API_USERS_LOGIN, API_USERS_REGISTER } from "./apis.js"
 
 export function calcDate(min, max){
 	const diff = max-min;
@@ -18,6 +18,10 @@ export function calcDate(min, max){
 
 export function loadCookies() {
 	return Cookies.get();
+}
+
+export function setCookie(name, value, opts={}) {
+	Cookies.set(name, value, opts);
 }
 
 export function get_time(){
@@ -166,4 +170,36 @@ export function initEvents(){
 	init();
 
 	return instance;
+}
+
+export async function loginApi(username, password) {
+	const result = await new Promise(resolve => axios({
+		method: "POST",
+		url: API_USERS_LOGIN,
+		headers: {
+			"content-type": "application/json",
+		},
+		data: {
+			email: username,
+			password: password
+		}
+	}).then(res => resolve(res.data)).catch(err => resolve(err.response.data)));
+	return result;
+
+}
+
+export async function registerApi(username, password) {
+	const result = await new Promise(resolve => axios({
+		method: "POST",
+		url: API_USERS_REGISTER,
+		headers: {
+			"content-type": "application/json",
+		},
+		data: {
+			email: username,
+			password: password
+		}
+	}).then(res => resolve(res.data)).catch(err => resolve(err.response.data)));
+	return result;
+
 }

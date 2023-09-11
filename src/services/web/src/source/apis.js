@@ -8,3 +8,5 @@ export const JOBS_INFO = "http://"+host+":80/jobs/info";
 export const JOBS_START = "http://"+host+":80/jobs/start";
 export const JOBS_STOP = "http://"+host+":80/jobs/stop";
 export const API_USERS_VALIDATE = "http://"+host+":80/api/users/validate";
+export const API_USERS_LOGIN = "http://"+host+":80/api/users/login";
+export const API_USERS_REGISTER = "http://"+host+":80/api/users/register";

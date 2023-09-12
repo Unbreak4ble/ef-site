@@ -3,6 +3,7 @@ import {setCookie, loginApi, registerApi} from "./utils.js";
 import {useState, useRef} from "react";
 
 async function login_action(username, password, setMessage){
+	setMessage("");
 	const result = await loginApi(username, password);
 	if(result.status === "error"){
 		setMessage(result.content);

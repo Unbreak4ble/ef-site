@@ -1,5 +1,4 @@
 const express = require("express");
-const redis = require("../static/redis/redis.js");
 const websocket = require("./websocket.js");
 const http = require("http");
 

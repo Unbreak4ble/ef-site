@@ -1,6 +1,9 @@
 const {MongoClient} = require('mongodb');
 
-const mongodb_url = "mongo://root:root@mongodb";
+const username = "root";
+const password = "root";
+const hostname = "mongodb";
+const mongodb_url = "mongodb://"+username+":"+password+"@"+hostname;
 
 class Crud {
 	constructor() {
@@ -37,7 +40,7 @@ class Crud {
 
 	remove = async (query) => {
 		const client = this.collection;
-		await client.deleteOne(query);
+		await client.deleteMany(query);
 	};
 
 	get = async (query) => {
@@ -49,7 +52,20 @@ class Crud {
 	filter = async (query) => {
 		const client = this.collection;
 		const result = await client.find(query);
-		return result;
+		const results = [];
+		for await(const doc of result){
+			results.push(doc);
+		}
+		return results;
+	}
+
+	track = async (query, callback) => {
+		const client = this.collection;
+		const payload = [
+			{ $match: query }
+		];
+		const stream = client.watch(payload);
+		stream.on("change", callback);
 	}
 };
 

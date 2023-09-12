@@ -3,9 +3,9 @@ const express = require("express");
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const session = require("./static/redis/users.js");
-const lib_sessions = require("./static/redis/sessions.js");
-const { Crud } = require("./static/redis/crud.js");
+const lib_users = require("./static/mongodb/users.js");
+//const lib_sessions = require("./static/mongodb/sessions.js");
+const { Crud } = require("./static/mongodb/crud.js");
 const lib_token = require("./static/utils/token.js");
 const fs = require("fs");
 const ef = require("./static/utils/ef-utils.js")
@@ -23,7 +23,7 @@ async function handle(app) {
 	app.use(express.urlencoded({ extended: true }));
 	app.use(cookieParser());
 	app.use(cors({origin: true, credentials: true}));
-	const client = new session.Client();
+	const client = new lib_users.Client();
 	await client.connect();
 
 	app.post("/api/users/login", async function(req, res) {
@@ -32,7 +32,7 @@ async function handle(app) {
 			res.status(400).send(generateError("email or password not found"));
 			return;
 		}
-		const token = await client.new_session({name: body.email, password: body.password});
+		const token = await client.new_session(body.email, body.password);
 		if(!token)
 			res.send(generateError("invalid email or password"));
 		else{

@@ -1,5 +1,5 @@
 const {Crud} = require("./crud.js");
-const token = require("../utils/token.js");
+const lib_token = require("../utils/token.js");
 
 class Sessions {
 	constructor() {
@@ -21,9 +21,9 @@ class Sessions {
 		return session;
 	}
 	
-	add = async(ss_token) => {
-		const id = token.rand_id();
-		await this.client.add({id: id, token: ss_token, begin_time: 0, activities_done: 0, current_activity: ""});
+	add = async(token, xaccess, username="") => {
+		const id = lib_token.rand_id();
+		await this.client.add({id: id, token: token, xaccess: xaccess, username: username, begin_time: 0, activities_done: 0, current_activity: ""});
 		return id;
 	}
 

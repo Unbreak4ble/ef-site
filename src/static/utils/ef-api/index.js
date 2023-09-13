@@ -4,7 +4,7 @@ class Automation {
 	constructor(token, xaccess) {
 		this.token = token;
 		this.xaccess = xaccess;
-		this.stop = false;
+		this.stopped = false;
 	}
 
 	start() {
@@ -12,7 +12,7 @@ class Automation {
 	}
 
 	stop() {
-		
+		this.stopped = true;
 	}
 }
 

@@ -2,7 +2,6 @@ const token = require("./token.js");
 
 function generate_payload(token_jwt) {
 	let metadata = {
-		username: "?",
 		token_expiry: 0
 	};
 	

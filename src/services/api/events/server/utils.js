@@ -38,7 +38,7 @@ function compare(old, now) {
 
                 for(let key in now_session){
                         if(old_session[key] != now_session[key]){
-                        console.log("not equak: ", old_session[key], now_session[key]);
+                        console.log("not equak: ", key, old_session[key], now_session[key]);
                                 points.push(now_session);
                                 diff = true;
                                 break;

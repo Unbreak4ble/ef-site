@@ -61,8 +61,13 @@ async function handle(app) {
 		}
 		const token = body.token;
 
-		const isValid = lib_token.is_all_ok(token);
-
+		let isValid = lib_token.is_all_ok(token);
+		const token_payload = lib_token.decode_jwt(token);
+		const token_id = token_payload.userId;
+		if(isValid){
+			const user = await client.session_get(token_id);
+			isValid = user != void 0;
+		}
 		res.send(isValid);
 	});
 	

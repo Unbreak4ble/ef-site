@@ -44,6 +44,7 @@ function con(client){
 				const refact = {...content};
 				Object.assign(refact, lib_ef.generate_payload(refact.token));
 				delete refact.token;
+				delete refact.xaccess;
 				client.send(JSON.stringify(refact));
 			});
 		}

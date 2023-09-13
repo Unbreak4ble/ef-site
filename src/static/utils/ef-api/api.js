@@ -1,8 +1,8 @@
 const {request} = require("./utils.js");
 
 const API = {
-				pushData: () => {url: "https://learn.corporate.ef.com/api/school-proxy/v1/commands/activity/complete", method: "POST"},
-				troop: () => {url: "https://learn.corporate.ef.com/api/school-proxy/v1/troop?c=countrycode=br|culturecode=en|partnercode=Corp|studentcountrycode=br|languagecode=en|siteversion=18-1|devicetypeid=1|productid=100", method: "POST"},
+				pushData: () => ({url: "https://learn.corporate.ef.com/api/school-proxy/v1/commands/activity/complete", method: "POST"}),
+				troop: () => ({url: "https://learn.corporate.ef.com/api/school-proxy/v1/troop?c=countrycode=br|culturecode=en|partnercode=Corp|studentcountrycode=br|languagecode=en|siteversion=18-1|devicetypeid=1|productid=100", method: "POST"}),
 };
 
 const API_PAYLOADS = {
@@ -16,12 +16,12 @@ const API_PAYLOADS = {
 				}
 }
 
-const mountHeader = (token, xaccess) => {
+const mountHeader = (token, xaccess) => ({
 	"accept": "*/*",
 	"accept-encoding": "gzip, deflate, br",
 	"accept-language": "en-US,en;q=0.9,pt;q=0.8",
 	"authorization": "bearer "+token, 
-	"content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+	"content-type": "application/json; charset=UTF-8",//"application/x-www-form-urlencoded; charset=UTF-8",
 	"cookie": "", 
 	"origin": "https://learn.corporate.ef.com",
 	"referer": "https://learn.corporate.ef.com/iframed-study/studyplan/",
@@ -35,10 +35,19 @@ const mountHeader = (token, xaccess) => {
 	"x-ef-access": xaccess,
 	"x-request-id": (new Date).getTime(),
 	"x-requested-with": "XMLHttpRequest"
-};
+});
 
 function queryFormat(payload){
 	return {q: payload};
+}
+
+function mountCompletePayload(activity_id, score, minutes_spend, mode){
+	return {
+		"studentActivityId":activity_id,
+		"score":score,
+		"minutesSpent":minutes_spend,
+		"studyMode":mode
+	};
 }
 
 async function getPlans(credentials){
@@ -76,7 +85,7 @@ async function loadUnit(credentials, id){
 	return response.data;
 }
 
-async function loadLevels(credentials, plans){
+async function loadLevels(credentials){
 	const {token, xaccess} = credentials;
 	const {url, method} = API.troop();
 	const plans = await getPlans(credentials);
@@ -94,15 +103,22 @@ async function loadStep(credentials, id){
 }
 
 async function loadActivity(credentials, id){
-
+	const {token, xaccess} = credentials;
+	const {url, method} = API.troop();
+	const response = await request(url, method, mountHeader(token, xaccess), queryFormat(API_PAYLOADS.troop.activity_info(id)));
+	return response.data;
 }
 
-async function pushData(credentials, data){
-
+async function pushData(credentials, payload){
+	const {token, xaccess} = credentials;
+	const {url, method} = API.pushData();
+	const response = await request(url, method, mountHeader(token, xaccess), payload);
+	return response.data;
 }
 
 module.exports = {
 	mountHeader,
+	mountCompletePayload,
 	API,
 	API_PAYLOADS,
 	getPlans,

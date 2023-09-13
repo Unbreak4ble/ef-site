@@ -6,7 +6,7 @@ const cors = require("cors");
 const lib_users = require("./static/mongodb/users.js");
 const lib_sessions = require("./static/mongodb/sessions.js");
 const { Crud } = require("./static/mongodb/crud.js");
-const token = require("./static/utils/token.js");
+const lib_token = require("./static/utils/token.js");
 const fs = require("fs");
 const ef = require("./static/utils/ef-utils.js")
 
@@ -28,10 +28,10 @@ async function handle(app) {
 			return res.status(400).send("check headers and payload");
 		}
 
-		if(!token.is_all_ok(auth))
+		if(!lib_token.is_all_ok(auth))
 			return res.status(401).send();
 
-		const id = token.decode_jwt(auth).userId;
+		const id = lib_token.decode_jwt(auth).userId;
 
 		let user = await client_users.session_get(id);
 
@@ -61,17 +61,19 @@ async function handle(app) {
 	app.post("/api/sessions", async function(req, res){
 		const body = req.body;
 		const auth = req.headers.authorization;
-		const id = token.decode_jwt(auth).userId;
-		const tokens = body.token;
+		const id = lib_token.decode_jwt(auth).userId;
+		const token = body.token;
+		const xaccess = body.xaccess;
+		const username = body.username ?? "";
 
-		if(tokens == void 0 || !tokens.length){
-			return res.status(400).send("token not found");
+		if((token == void 0 || !token.length) || (xaccess == void 0 || !xaccess.length)){
+			return res.status(400).send("token or xaccess not found");
 		}
 
-		if(!token.is_all_ok(auth))
+		if(!lib_token.is_all_ok(auth))
 			return res.status(401).send();
 
-		const ss_id = await client_sessions.add(tokens);
+		const ss_id = await client_sessions.add(token, xaccess, username);
 		const user = await client_users.session_get(id);
 		
 		if(user == void 0){
@@ -88,14 +90,14 @@ async function handle(app) {
 	app.delete("/api/sessions", async function(req, res){
 		const body = req.body;
 		const auth = req.headers.authorization;
-		const userId = token.decode_jwt(auth).userId;
+		const userId = lib_token.decode_jwt(auth).userId;
 		const id = body.id;
 		
 		if(id == void 0 || !id.length){
 			return res.status(400).send("check id");
 		}
 		
-		if(!token.is_all_ok(auth))
+		if(!lib_token.is_all_ok(auth))
 			return res.status(401).send();
 
 		const user = await client_users.session_get(userId);

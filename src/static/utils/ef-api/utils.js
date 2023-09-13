@@ -1,13 +1,13 @@
 const axios = require("axios");
 
 async function request(url, method, headers, data){
-  const response = await axios({
+  const response = await new Promise(resolve => axios({
     url: url,
     method: method,
     headers: headers,
   	data: data
-  });
-	return response.data;
+  }).then(res => resolve(res)).catch(error => resolve({})));
+	return response;
 }
 
 function randGen(a,b){

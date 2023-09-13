@@ -64,7 +64,7 @@ export async function loadSessions(cbe) {
 	return response;
 }
 
-export async function pushSession({token, username}) {
+export async function pushSession({token, username, xaccess}) {
 	const data = await new Promise((resolve) => axios({
 		method:"POST",
 		url: API_SESSIONS,
@@ -74,7 +74,8 @@ export async function pushSession({token, username}) {
 		},
 		data: {
 			token: token,
-			username: username
+			username: username,
+			xaccess: xaccess
 		}
 	}).then(() => resolve("added")).catch(() => resolve("failed to add")));
 	return data;

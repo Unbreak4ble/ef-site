@@ -10,11 +10,13 @@ import { loadSessions, handleEvent, websocket, get_time, calcDate, loadCookies, 
 
 const modalContext = createContext("none");
 
-async function addSession(state, textRef){
+async function addSession(state, textRef, xaccessRef, nameRef){
 	const [, setStatus] = state;
 	setStatus("");
-	const status = await pushSession({token: textRef.value});
+	const status = await pushSession({token: textRef.value, xaccess: xaccessRef.value, username: nameRef.value});
 	textRef.value = "";
+	xaccessRef.value = "";
+	nameRef.value = "";
 	setStatus(status);
 }
 
@@ -152,12 +154,13 @@ function SessionModal(){
 	const [context, setContext] = useContext(modalContext);
 	const statusState = useState("");
 	const tokenRef = useRef();
+	const xaccessRef = useRef();
+	const nameRef = useRef();
 	
 	return (
 		<div className="modal" style={{display: context.modal}}>
 			<div className="modal-body">
 				<div className="modal-bar">
-					<a>Add Session</a>
 					<div className="modal-close" onClick={() => setContext({ modal: "none" })}>
 						<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40" viewBox="0 0 26 26">
 							<path d="M 21.734375 19.640625 L 19.636719 21.734375 C 19.253906 22.121094 18.628906 22.121094 18.242188 21.734375 L 13 16.496094 L 7.761719 21.734375 C 7.375 22.121094 6.746094 22.121094 6.363281 21.734375 L 4.265625 19.640625 C 3.878906 19.253906 3.878906 18.628906 4.265625 18.242188 L 9.503906 13 L 4.265625 7.761719 C 3.882813 7.371094 3.882813 6.742188 4.265625 6.363281 L 6.363281 4.265625 C 6.746094 3.878906 7.375 3.878906 7.761719 4.265625 L 13 9.507813 L 18.242188 4.265625 C 18.628906 3.878906 19.257813 3.878906 19.636719 4.265625 L 21.734375 6.359375 C 22.121094 6.746094 22.121094 7.375 21.738281 7.761719 L 16.496094 13 L 21.734375 18.242188 C 22.121094 18.628906 22.121094 19.253906 21.734375 19.640625 Z"></path>
@@ -166,9 +169,11 @@ function SessionModal(){
 				</div>
 				<div className="modal-content">
 					<div className="modal-form">
-						<textarea ref={tokenRef} required id="uniqueTextArea" placeholder="token"></textarea>
+						<textarea ref={nameRef} required placeholder="username" className="modal-input"></textarea>
+						<textarea ref={tokenRef} required id="uniqueTextArea" className="modal-input" placeholder="token"></textarea>
+						<textarea ref={xaccessRef} required placeholder="x-access" className="modal-input"></textarea>
 						<a className="modal-form-status">{statusState[0]}</a>
-						<button className="button" onClick={() => addSession(statusState, tokenRef.current)}>add session</button>
+						<button className="button" onClick={() => addSession(statusState, tokenRef.current, xaccessRef.current, nameRef.current)}>add session</button>
 					</div>
 				</div>
 			</div>

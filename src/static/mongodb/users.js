@@ -55,7 +55,7 @@ class Client {
 
 	session_update = async(id, obj) => {
 		const client = this.client;
-		await client.set({id: id}, obj);
+		await client.update({id: id}, {$set: obj});
 	}
 
 	session_delete = async (id) => {

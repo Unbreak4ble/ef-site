@@ -1,4 +1,4 @@
-const lib_sessions = require("../static/redis/sessions.js");
+const lib_sessions = require("../static/mongodb/sessions.js");
 const lib_ws = require("ws");
 
 const main_ip = "172.25.0.100";

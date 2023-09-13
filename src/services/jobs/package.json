@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
 		"axios": "0.27",
+		"mongodb": "latest",
 		"ws": "latest",
 		"cors": "latest",
 		"redis": "latest",

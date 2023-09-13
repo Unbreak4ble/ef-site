@@ -55,7 +55,6 @@ export async function handleEvent(sessions, setSessions){
 
 export async function loadSessions(cbe) {
 	const api = services["api"];
-	console.log("trying: ", api);
 	let response = [];
 	try{
 		response = (await axios.get(API_SESSIONS, { headers: {
@@ -65,7 +64,7 @@ export async function loadSessions(cbe) {
 	return response;
 }
 
-export async function pushSession(token) {
+export async function pushSession({token, username}) {
 	const data = await new Promise((resolve) => axios({
 		method:"POST",
 		url: API_SESSIONS,
@@ -74,7 +73,8 @@ export async function pushSession(token) {
 			authorization: loadCookies().token
 		},
 		data: {
-			token: token
+			token: token,
+			username: username
 		}
 	}).then(() => resolve("added")).catch(() => resolve("failed to add")));
 	return data;

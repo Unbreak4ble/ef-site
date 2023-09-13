@@ -13,7 +13,7 @@ const modalContext = createContext("none");
 async function addSession(state, textRef){
 	const [, setStatus] = state;
 	setStatus("");
-	const status = await pushSession(textRef.value);
+	const status = await pushSession({token: textRef.value});
 	textRef.value = "";
 	setStatus(status);
 }
@@ -123,14 +123,13 @@ class Sessions extends React.Component {
 			}else if(json.id != void 0){
 				this.state.sessions.push(json);
 			}
-			upgrade();
 		}
 
 		loadSessions().then(sessions => {
 			this.setState({sessions: sessions});
 			pushEvent(onMessage);
 
-     	const interval = setInterval(upgrade, 1000);
+     	const interval = setInterval(upgrade, 500);
 		});
 	}
 	render() {
@@ -152,7 +151,7 @@ class Sessions extends React.Component {
 function SessionModal(){
 	const [context, setContext] = useContext(modalContext);
 	const statusState = useState("");
-	const textRef = useRef();
+	const tokenRef = useRef();
 	
 	return (
 		<div className="modal" style={{display: context.modal}}>
@@ -167,9 +166,9 @@ function SessionModal(){
 				</div>
 				<div className="modal-content">
 					<div className="modal-form">
-						<textarea ref={textRef} required id="uniqueTextArea" placeholder="put token here"></textarea>
+						<textarea ref={tokenRef} required id="uniqueTextArea" placeholder="token"></textarea>
 						<a className="modal-form-status">{statusState[0]}</a>
-						<button className="button" onClick={() => addSession(statusState, textRef.current)}>add session</button>
+						<button className="button" onClick={() => addSession(statusState, tokenRef.current)}>add session</button>
 					</div>
 				</div>
 			</div>

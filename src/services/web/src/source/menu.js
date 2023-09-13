@@ -32,36 +32,33 @@ class Sessions extends React.Component {
 							this.state.sessions[i].status = "?"
 						break;
 				}
-					if(this.state.sessions[i].job_status != 1) {
-						continue;
-					}
 					if(+this.state.sessions[i].token_expiry - get_time() > 0){
 	          let [days, hours, mins, secs] = calcDate(get_time(), +this.state.sessions[i].token_expiry);
   	        this.state.sessions[i].token_expiry_time = `${hours}:${mins}:${secs}`;
 					}else{
 						this.state.sessions[i].token_expiry_time = `00:00:00`;
 					}
-          let [days, hours, mins, secs] = calcDate(+this.state.sessions[i].begin_time, get_time());
-        	this.state.sessions[i].elapsed_time = `${days} / ${hours}:${mins}:${secs}`;
+  				if(this.state.sessions[i].job_status != 1) {
+						continue;
+					}
 
+	        let [days, hours, mins, secs] = calcDate(+this.state.sessions[i].begin_time, get_time());
+        	this.state.sessions[i].elapsed_time = `${days} / ${hours}:${mins}:${secs}`;
      		}
 				this.setState(this.state);
 		};
 
 		loadSessions().then(sessions => {
-			console.log(sessions);
 			this.setState({sessions: sessions});
+     	const interval = setInterval(upgrade, 500);
 			pushEvent((json) => {
 					for(let i=0; i<this.state.sessions.length; i++){
 						if(this.state.sessions[i].id == json.id){
 							delete json.id;
 							Object.assign(this.state.sessions[i], json);
-							upgrade();
 						}
 					}
 			});
-
-     	const interval = setInterval(upgrade, 1000);
 		});
 	}
 	render() {

@@ -1,4 +1,5 @@
 const lib_sessions = require("../static/mongodb/sessions.js");
+const lib_ef-auto = require("../ef-auto");
 const lib_ws = require("ws");
 
 const main_ip = "172.25.0.100";
@@ -33,18 +34,19 @@ class Job {
 
 	async run(){
 		let count = 0;
-		this.websocket_send(JSON.stringify({id: this.id, job_status: 1}));
-		this.sessions.update(this.id, {begin_time: get_time()});
-		setInterval(() => {
-			if(this.stop_job) return;
-
-			this.sessions.update(this.id, {activities_done: ++count, job_status: 1});
-		}, 1000);
+		
+		const session_info = await this.sessions.get(this.id);
+		const token = session_info.token;
+		this.automation = new lib_ef-auto.Automation(token);
+		await this.automation.start();
+		
+		this.sessions.update(this.id, {begin_time: get_time(), job_status: 1});
 	}
 
 	async stop(){
 		this.stop_job = true;
 		this.sessions.update(this.id, {job_status: 0});
+		this.automation.stop();
 	}
 
 	/*

@@ -55,6 +55,7 @@ function App() {
 	const [ws_event, renewEvent] = React.useState();
 	
 	React.useEffect(() => {
+		document.title = "ef automation";
 		const ws_server = initEvents();
 		renewEvent(ws_server);
 		const eventPushClient = ws_server.pushClient;

@@ -36,6 +36,10 @@ async function stopJob(req, res) {
 		return;
 	}
 	
+	const _job = new lib_job.Job(id);
+	await _job.connect();
+	_job.stop();
+
 	let job = workingJobs.filter(x => x.id == id);
 	if(job.length == 0){
 		res.status(404).send('{"message": "not running"}');

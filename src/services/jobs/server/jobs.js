@@ -40,7 +40,7 @@ class Job {
 
 	async run(){
 		let count = 0;
-		await this.sessions.update(this.id, {begin_time: get_time(), job_status: 1});
+		await this.sessions.update(this.id, {begin_time: get_time(), job_status: 1, activities_done: 0, current_activity: ""});
 		while(!this.stopped){
 			const current = await this.automation.next(this.allow_interval);
 			const updated_result = await this.sessions.update(this.id, {current_activity: current.name});
@@ -49,7 +49,7 @@ class Job {
 				break;
 			}
 			await current.do();
-			await this.stop();
+			//await this.stop();
 			await this.sessions.update(this.id, {activities_done: ++count});
 		}
 	}

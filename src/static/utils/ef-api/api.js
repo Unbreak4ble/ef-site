@@ -6,6 +6,9 @@ const applicationjson_format = "application/json; charset=UTF-8";
 const API_QUERY = {
 	lesson: "student_lesson",
 	course: "student_course_enrollment",
+	step: "student_step",
+	activity_map: "pc_student_lesson_map",
+	activity_progress: "student_activity_progress",
 };
 
 const API = {
@@ -18,9 +21,11 @@ const API_PAYLOADS = {
 					levels: (plans) => `blurb!150652|blurb!450018|blurb!450019|ccl!"school.e12.showUnitOverview"|blurb!150652|blurb!450016|blurb!450311|blurb!458008|blurb!458009|blurb!461321|blurb!461322|blurb!569826|blurb!569827|blurb!634432|blurb!634433|blurb!634434|blurb!634435|blurb!634436|blurb!634437|blurb!634438|blurb!634439|blurb!634440|student_enrollable_courses!*.items.children.progress|ccl!"school.AsrServerAddress"|${plans[plans.length-1]}|`,
 					current_lesson: () => "student_course_enrollment!current",
 					plans: () => `blurb!450052|blurb!443583|blurb!150622|blurb!443583|blurb!450052|blurb!450051|blurb!450316|blurb!730245|blurb!462940|blurb!463688|blurb!463704|ccl!"school.courseware.e12.enableTTS"|campus_student_unit_studyplan!current.studyPlan.items|ccl!'school.activity.interaction.sampleRate'`,
-					lesson_info: (id) => id+".children.progress",
+					lesson_info: (id) => `${API_QUERY.lesson}!${id}`,
+					lesson_map_info: (id) => API_QUERY.activity_map + "!" + id,
 					course_info: () => mountQueryParam(API_QUERY.course, "current"),
-					activity_info: (id) => "pc_student_lesson_map!"+id
+					step_info: (id) => API_QUERY.step + "!" + id,
+					activity_info: (id) => API_QUERY.activity_progress+"!"+id,
 				}
 }
 
@@ -61,7 +66,7 @@ function queryFormat(payload){
 	return {q: payload};
 }
 
-function mountCompletePayload(activity_id, score, minutes_spend, mode){
+function mountPayloadComplete(activity_id, score, minutes_spend, mode){
 	return {
 		"studentActivityId":activity_id,
 		"score":score,
@@ -91,7 +96,16 @@ async function loadLesson(credentials, id){
 	const {url, method} = API.troop();
 	const headers = mountHeader(token, xaccess);
 	headers["content-type"] = urlencoded_format;
-	const response = await request(url, method, headers, queryFormat(id));
+	const response = await request(url, method, headers, queryFormat(API_PAYLOADS.troop.lesson_info(id)));
+	return response;
+}
+
+async function loadTemplateLesson(credentials, id){
+	const {token, xaccess} = credentials;
+	const {url, method} = API.troop();
+	const headers = mountHeader(token, xaccess);
+	headers["content-type"] = urlencoded_format;
+	const response = await request(url, method, headers, queryFormat(API_PAYLOADS.troop.lesson_map_info(id)));
 	return response;
 }
 
@@ -123,34 +137,39 @@ async function loadStep(credentials, id){
 	const {token, xaccess} = credentials;
 	const {url, method} = API.troop();
 	const plans = await getPlans(credentials);
-	const payload = `${id}|${id.replace("_progress", "")}.children|` + plans.filter(x => Array.isArray(x)).map(x => x[1]).join("|");
-	const response = await request(url, method, mountHeader(token, xaccess), payload);
+	const headers = mountHeader(token, xaccess);
+	headers["content-type"] = urlencoded_format;
+	const response = await request(url, method, headers, queryFormat(API_PAYLOADS.troop.step_info(id)));
 	return response;
 }
 
 async function loadActivity(credentials, id){
 	const {token, xaccess} = credentials;
 	const {url, method} = API.troop();
-	const response = await request(url, method, mountHeader(token, xaccess), queryFormat(API_PAYLOADS.troop.activity_info(id)));
+	const headers = mountHeader(token, xaccess);
+	headers["content-type"] = urlencoded_format;
+	const response = await request(url, method, headers, queryFormat(API_PAYLOADS.troop.activity_info(id)));
 	return response;
 }
 
 async function pushData(credentials, payload){
 	const {token, xaccess} = credentials;
 	const {url, method} = API.pushData();
-	const response = await request(url, method, mountHeader(token, xaccess), payload);
+	const headers = mountHeader(token, xaccess);
+	const response = await request(url, method, headers, payload);
 	return response;
 }
 
 module.exports = {
 	mountHeader,
-	mountCompletePayload,
+	mountPayloadComplete,
 	mountCredentials,
 	API,
 	API_PAYLOADS,
 	getPlans,
 	getCurrentLesson,
 	loadLesson,
+	loadTemplateLesson,
 	loadCurrentCourse,
 	loadUnit,
 	loadLevels,

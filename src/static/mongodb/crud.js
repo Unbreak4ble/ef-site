@@ -70,10 +70,11 @@ class Crud {
 		return results;
 	}
 
-	track = async (query, callback) => {
+	track = async (query, projection, callback) => {
 		const client = this.collection;
 		const payload = [
-			{ $match: query }
+			{ $match: query },
+			{ $project: projection }
 		];
 		const stream = client.watch(payload);
 		stream.on("change", callback);

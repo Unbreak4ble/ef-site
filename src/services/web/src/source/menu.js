@@ -65,16 +65,19 @@ class Sessions extends React.Component {
 		return (
 			<>
 			{
-				this.state.sessions.map(ss => (
-	   	  	<TableRow className="align">
+				this.state.sessions.map(ss => {
+					ss.current ??= {};
+	   	  	return (<TableRow className="align">
   	   			<TableCell align="left">{ss.username}</TableCell>
 						<TableCell align="right">{ss.token_expiry_time}</TableCell>
 						<TableCell align="right">{ss.status}</TableCell>
 						<TableCell align="right">{ss.elapsed_time}</TableCell>
 						<TableCell align="right">{ss.activities_done}</TableCell>
-						<TableCell align="right">{ss.current_activity}</TableCell>
-			  	</TableRow>
-	  		))
+						<TableCell align="right">{ss.current.unit_name}</TableCell>
+						<TableCell align="right">{ss.current.lesson_name}</TableCell>
+						<TableCell align="right">{ss.current.step_name}</TableCell>
+			  	</TableRow>);
+				})
 			}
 			</>
 		);
@@ -98,7 +101,9 @@ class Menu extends React.Component {
             <TableCell align="right">Status</TableCell>
             <TableCell align="right">Elapsed Time</TableCell>
             <TableCell align="right">Activities Done</TableCell>
-            <TableCell align="right">Current</TableCell>
+            <TableCell align="right">unit</TableCell>
+            <TableCell align="right">lesson</TableCell>
+            <TableCell align="right">step</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

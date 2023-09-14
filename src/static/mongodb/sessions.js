@@ -23,8 +23,12 @@ class Sessions {
 	
 	add = async(token, xaccess, username="") => {
 		const id = lib_token.rand_id();
-		await this.client.add({id: id, token: token, xaccess: xaccess, username: username, begin_time: 0, activities_done: 0, current_activity: ""});
+		await this.client.add({id: id, token: token, xaccess: xaccess, username: username, begin_time: 0, activities_done: 0, current: {}, logs: []});
 		return id;
+	}
+
+	pushLog = async(id, message) => {
+		return (await this.client.update({id: id}, {$push: {logs: {message: message, time: (new Date()).getTime()}}}));
 	}
 
 	update = async(id, opts) => {

@@ -40,24 +40,27 @@ class Job {
 
 	async run(){
 		let count = 0;
-		await this.sessions.update(this.id, {begin_time: get_time(), job_status: 1, activities_done: 0, current_activity: ""});
+		await this.sessions.update(this.id, {begin_time: get_time(), job_status: 1, activities_done: 0, current: {lesson_name: "", step_name: "", unit_name: "", level_name: ""}});
 		while(!this.stopped){
-			const current = await this.automation.next(this.allow_interval);
-			const updated_result = await this.sessions.update(this.id, {current_activity: current.name});
-			if(!updated_result){
-				await this.stop();
-				break;
+			try{
+				const current = await this.automation.next(this.allow_interval);
+				const updated_result = await this.sessions.update(this.id, {current: current.current});
+				if(!updated_result){
+					await this.stop();
+					break;
+				}
+				await current.do();
+				await this.sessions.update(this.id, {activities_done: ++count});
+			}catch{
+				await this.stop(true);
 			}
-			await current.do();
-			//await this.stop();
-			await this.sessions.update(this.id, {activities_done: ++count});
 		}
 	}
 
-	async stop(){
+	async stop(crash=false){
 		try{
 			this.stopped = true;
-			await this.sessions.update(this.id, {job_status: 0});
+			await this.sessions.update(this.id, {job_status: crash ? 2 : 0});
 		}catch{}
 	}
 

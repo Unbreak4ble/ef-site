@@ -75,6 +75,15 @@ function mountPayloadComplete(activity_id, score, minutes_spend, mode){
 	};
 }
 
+async function queryRequest(credentials, query) {
+	const {token, xaccess} = credentials;
+	const {url, method} = API.troop();
+	const headers = mountHeader(token, xaccess);
+	headers["content-type"] = urlencoded_format;
+	const response = await request(url, method, headers, queryFormat(query));
+	return response;
+}
+
 async function getPlans(credentials){
 	const {token, xaccess} = credentials;
 	const {url, method} = API.troop();
@@ -167,6 +176,7 @@ module.exports = {
 	API,
 	API_PAYLOADS,
 	getPlans,
+	queryRequest,
 	getCurrentLesson,
 	loadLesson,
 	loadTemplateLesson,

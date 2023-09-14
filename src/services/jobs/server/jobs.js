@@ -13,7 +13,8 @@ class Job {
 		this.id = id;
 		this.mode = 0;
 		this.sessions = new lib_sessions.Sessions();
-		this.stop_job = false;
+		this.stopped = false;
+		this.allow_interval = true;
 	}
 
 	async connect(){
@@ -27,7 +28,8 @@ class Job {
 
 		const session_info = await this.sessions.get(this.id);
 		const token = session_info.token;
-		this.automation = new lib_ef_auto.Automation(token);
+		const xaccess = session_info.xaccess;
+		this.automation = new lib_ef_auto.Automation(token, xaccess);
 	}
 
 	websocket_send(msg){
@@ -38,17 +40,25 @@ class Job {
 
 	async run(){
 		let count = 0;
-		
-		await this.automation.start();
-		
-		this.sessions.update(this.id, {begin_time: get_time(), job_status: 1});
+		await this.sessions.update(this.id, {begin_time: get_time(), job_status: 1});
+		while(!this.stopped){
+			const current = await this.automation.next(this.allow_interval);
+			const updated_result = await this.sessions.update(this.id, {current_activity: current.name});
+			if(!updated_result){
+				await this.stop();
+				break;
+			}
+			await current.do();
+			await this.stop();
+			await this.sessions.update(this.id, {activities_done: ++count});
+		}
 	}
 
 	async stop(){
-		this.stop_job = true;
-		this.sessions.update(this.id, {job_status: 0});
-		console.log(this.automation);
-		this.automation.stop();
+		try{
+			this.stopped = true;
+			await this.sessions.update(this.id, {job_status: 0});
+		}catch{}
 	}
 
 	/*

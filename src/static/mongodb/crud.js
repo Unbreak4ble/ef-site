@@ -41,8 +41,12 @@ class Crud {
 	update = async(query, obj, options={upsert:true}) => {
 		const client = this.collection;
 		const exists = (await this.get(query)) != void 0;
-		if(exists)
-			await client.updateOne(query, obj, options);
+		if(!exists) 
+			return false;
+			
+		await client.updateOne(query, obj, options);
+
+		return true;
 	};
 
 	remove = async (query) => {

@@ -28,7 +28,7 @@ class Sessions {
 	}
 
 	update = async(id, opts) => {
-		await this.client.update({id: id}, {$set: opts});
+		return (await this.client.update({id: id}, {$set: opts}));
 	}
 
 	remove = async(id) => {

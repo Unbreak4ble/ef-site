@@ -6,7 +6,7 @@ async function request(url, method, headers, data){
     method: method,
     headers: headers,
   	data: data
-  }).then(res => resolve(res)).catch(error => resolve({})));
+  }).then(res => resolve(res)).catch(error => resolve(error)));
 	return response;
 }
 

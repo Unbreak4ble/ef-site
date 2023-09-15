@@ -73,6 +73,7 @@ class Sessions extends React.Component {
 						<TableCell align="right">{ss.status}</TableCell>
 						<TableCell align="right">{ss.elapsed_time}</TableCell>
 						<TableCell align="right">{ss.activities_done}</TableCell>
+						<TableCell align="right">{ss.current.level_name}</TableCell>
 						<TableCell align="right">{ss.current.unit_name}</TableCell>
 						<TableCell align="right">{ss.current.lesson_name}</TableCell>
 						<TableCell align="right">{ss.current.step_name}</TableCell>
@@ -101,6 +102,7 @@ class Menu extends React.Component {
             <TableCell align="right">Status</TableCell>
             <TableCell align="right">Elapsed Time</TableCell>
             <TableCell align="right">Activities Done</TableCell>
+            <TableCell align="right">level</TableCell>
             <TableCell align="right">unit</TableCell>
             <TableCell align="right">lesson</TableCell>
             <TableCell align="right">step</TableCell>

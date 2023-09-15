@@ -70,7 +70,7 @@ class Crud {
 		return results;
 	}
 
-	track = async (query, projection, callback) => {
+	track = (query, projection, callback) => {
 		const client = this.collection;
 		const payload = [
 			{ $match: query },

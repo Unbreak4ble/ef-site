@@ -40,7 +40,7 @@ class Job {
 
 	async run(){
 		let count = 0;
-		await this.sessions.update(this.id, {begin_time: get_time(), job_status: 1, activities_done: 0, current: {lesson_name: "", step_name: "", unit_name: "", level_name: ""}});
+		await this.sessions.update(this.id, {begin_time: get_time(), job_status: 1, activities_done: 0, logs: [], current: {lesson_name: "", step_name: "", unit_name: "", level_name: ""}});
 		while(!this.stopped){
 			try{
 				const current = await this.automation.next(this.allow_interval);
@@ -52,6 +52,7 @@ class Job {
 				await current.do();
 				await this.sessions.update(this.id, {activities_done: ++count});
 			}catch{
+				await this.sessions.pushLog(this.id, "job crashed.");
 				await this.stop(true);
 			}
 		}

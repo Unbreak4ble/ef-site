@@ -39,6 +39,14 @@ class Sessions {
 		await this.client.remove({id: id});
 		return true;
 	}
+
+	watch = (callback) => {
+		console.log("watching changes");
+		const onChange = (data) => {
+			console.log("changed", data);
+		};
+		this.client.track({}, {id: true}, onChange);
+	}
 }
 
 module.exports = { Sessions };

@@ -34,16 +34,18 @@ function setStatusClass(status){
 	return status_class
 }
 
-function Session({username, expiration, status, id}){
+function Session({pushEvent, session}){
 	const [classes, setClasses] = useState("vertical_space_between session_delete_button");
 	const [stopClasses, setStopClasses] = useState("session_stop_button");
 	const [mainClass, setMainClass] = useState("container_session");
+	const logs = session.logs.map(x => `[${new Date(x.time).toLocaleString()}]: ${x.message}`).join("\n");
+	const {username, status, id} = session;
 	const isRunning = status === "running";
 	
 	if(status == void 0){
 		return <></>;
 	}
-	
+
 	const addClass = (val) => {
 		setClasses(classes+" "+val);
 	};
@@ -71,22 +73,26 @@ function Session({username, expiration, status, id}){
 		else
 			runThisSession();
 	}
-	
+
 	return (
 		<div className={mainClass}>
 			<div className="container_session_top">
 		  	<p>{username ?? "?"}</p>
 			</div>
-			<ul>
-				<li>token expiry: {expiration ?? "?"}</li>
-			</ul>
-			<div className={classes} onClick={() => deleteThisSession() }>
+			<div className="container_session_info">
+				<div>
+					<i>title</i>
+					<a>description</a>
+				</div>
 			</div>
-			<div className="container_fill_animation"></div>
-			<div className={"vertical_space_between session_status_button " +setStatusClass(status)} onClick={() => handleThisSession() }>
+			<div className="container_session_logs">
+				<textarea disabled value={logs}></textarea>
 			</div>
-			<div className="container_fill_animatione"></div>
-	</div>
+			<div className="container_session_buttons">
+				<div className={classes} onClick={() => deleteThisSession() }></div>
+				<div className={"vertical_space_between session_status_button " +setStatusClass(status)} onClick={() => handleThisSession() }></div>
+			</div>
+		</div>
 	);
 }
 
@@ -97,6 +103,7 @@ class Sessions extends React.Component {
 
 	constructor({pushEvent}){
 		super();
+		this.pushEvent = pushEvent;
 		const upgrade = async() => {
     	for(let i=0; i<this.state.sessions.length; i++){
 				switch(this.state.sessions[i].job_status){
@@ -139,10 +146,7 @@ class Sessions extends React.Component {
 			<>
 			{
 				this.state.sessions.map(ss => {
-					const options = { year: 'numeric', month: 'long', day: 'numeric', hour: "numeric" };
-					const time = (new Date(ss.token_expiry*1000)).toLocaleDateString("en-US", options);
-
-					return (<Session id={ss.id} username={ss.username} expiration={time} status={ss.status}/>);
+					return (<Session pushEvent={this.pushEvent} session={ss}/>);
 				})
 			}
 			</>
@@ -200,11 +204,16 @@ class Account extends React.Component {
 										<modalContext.Provider value={[this.state, this.setState.bind(this)]}>
 											<SessionModal/>
 										</modalContext.Provider>
-										<div className="flex">
+										<div className="flex_column">
 											<div className="append_session" onClick={() => this.setState({ modal: "flex"}) }>
-												<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
+												<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
+												<div>
+													<a>add session</a>
+												</div>
 											</div>
-			  	    				<Sessions pushEvent={this.pushEvent}/>
+											<div className="flex">
+												<Sessions pushEvent={this.pushEvent}/>
+											</div>
 										</div>
 									</>
         );

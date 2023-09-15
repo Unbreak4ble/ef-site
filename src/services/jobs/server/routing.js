@@ -2,6 +2,13 @@ const lib_job = require("./jobs");
 
 let workingJobs = [];
 
+async function validateJobs(){
+	for(let i=0; i<workingJobs.length; i++){
+		if(workingJobs[i].job.stopped)
+			workingJobs.splice(i, 1);
+	}
+}
+
 async function startJob(req, res) {
 	const body = req.body;
 	const id = body.id;
@@ -10,8 +17,9 @@ async function startJob(req, res) {
 		res.status(400).send('{"message": "specify id"}');
 		return 0;
 	}
+	const matchedJob = workingJobs.filter(x => x.id == id);
 
-	if(workingJobs.filter(x => x.id == id).length > 0){
+	if(matchedJob.length > 0){
 		res.status(409).send('{"message": "already started"}');
 		return;
 	}
@@ -75,6 +83,7 @@ async function infoJob(req, res) {
 }
 
 function routing(app){
+	setInterval(() => validateJobs(), 1000);
 	app.get("/jobs/", (req, res) => res.send("OK"));
 	app.post("/jobs/start", startJob);
 	app.post("/jobs/stop", stopJob);

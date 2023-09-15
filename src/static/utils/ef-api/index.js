@@ -89,6 +89,7 @@ class Automation {
 	}
 
 	async next(allow_interval=true) {
+		console.log("next");
 		const [current_level_name, current_unit_name, current_lesson_name] = await loadCurrentNames(this.token, this.xaccess);
 		let [activity_id, current_step_name] = await loadNextActivity(this.token, this.xaccess);
 		const do_activity = async (interval) => {

@@ -20,6 +20,22 @@ async function addSession(state, textRef, xaccessRef, nameRef){
 	setStatus(status);
 }
 
+function makeSessionItems(session){
+	let [days, hours, mins, secs] = calcDate(get_time(), +session.token_expiry);
+	const token_expiry = (session.token_expiry - get_time) > 0 ? `${hours}:${mins}:${secs}` : `00:00:00`;
+	[days, hours, mins, secs] = calcDate(+session.begin_time, get_time());
+  const elapsed_time = session.job_status == 1 ? `${hours}:${mins}:${secs}` : "00:00:00";
+	
+	return {
+		"Token Expiry Timelapse": token_expiry,
+		"Elapsed Time": elapsed_time,
+		"Current Level": session.current.level_name,
+		"Current Unit": session.current.unit_name,
+		"Current Lesson": session.current.lesson_name,
+		"Current Step": session.current.step_name,
+	}
+}
+
 function setStatusClass(status){
 	let status_class = "";
 	switch(status){
@@ -74,16 +90,30 @@ function Session({pushEvent, session}){
 			runThisSession();
 	}
 
+	const makeItem = (title, description) => {
+		return (<div>
+					<h4>{title}</h4>
+					<a>{description}</a>
+			</div>);
+	};
+	
+	const objToItem = (obj) => {
+		const keys = Object.keys(obj);
+		return keys.map(key => makeItem(key, obj[key]))
+	}
+
+	const sessionInfo = () => {
+		const obj = makeSessionItems(session);
+		return objToItem(obj);
+	}
+
 	return (
 		<div className={mainClass}>
 			<div className="container_session_top">
 		  	<p>{username ?? "?"}</p>
 			</div>
 			<div className="container_session_info">
-				<div>
-					<i>title</i>
-					<a>description</a>
-				</div>
+				{ sessionInfo()	}
 			</div>
 			<div className="container_session_logs">
 				<textarea disabled value={logs}></textarea>

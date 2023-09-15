@@ -101,7 +101,8 @@
 }
 
 .container_session {
-	display: block;
+	display: flex;
+	flex-direction: column;
 	position: relative;
 	/*justify-content: space-between;*/
 	/*align-items: end;*/
@@ -109,8 +110,20 @@
 	text-align: center;
 }
 
+.container_session_info {
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+	height: 50%;
+	overflow-y: hidden;
+}
+
+.container_session_info > div {
+	padding: 0 0 20px 20px;
+}
+
 .container_session_buttons {
-	position: absolute;
+	position: relative;
 	display: flex;
 	bottom: 0;
 	padding: 0;
@@ -124,17 +137,22 @@
 	bottom: 0 !important;
 }
 
-.container_session_logs > textarea {
-	position: absolute;
-	bottom: 8%;
+.container_session_logs {
+	position: relative;
 	left: 0;
-	resize: none;
-	width: 99%;
+	right: 0;
+	width: 100%;
 	height: 40%;
 }
 
+.container_session_logs > textarea {
+	width: 100%;
+	height: 100%;
+	resize: none;
+}
+
 .container_session_top {
-	position: absolute !important;
+	position: relative !important;
 	width: 100%;
 	top: 0;
 	padding: 0;

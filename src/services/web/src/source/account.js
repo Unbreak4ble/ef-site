@@ -90,6 +90,7 @@ function Session({pushEvent, session}){
 			</div>
 			<div className="container_session_buttons">
 				<div className={classes} onClick={() => deleteThisSession() }></div>
+				<div className="vertical_space_between session_edit_button">Edit</div>
 				<div className={"vertical_space_between session_status_button " +setStatusClass(status)} onClick={() => handleThisSession() }></div>
 			</div>
 		</div>

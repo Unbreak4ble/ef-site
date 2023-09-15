@@ -91,16 +91,18 @@ class Automation {
 	async next(allow_interval=true) {
 		console.log("next");
 		const [current_level_name, current_unit_name, current_lesson_name] = await loadCurrentNames(this.token, this.xaccess);
+		const logs = [];
+		const pushLog = (msg, ...args) => logs.push(msg, ...args);
 		let [activity_id, current_step_name] = await loadNextActivity(this.token, this.xaccess);
 		const do_activity = async (interval) => {
 			if(!activity_id) return;
-			console.log("doing automation");
+			pushLog("doing automation");
 			activity_id = activity_id.split("!")[1];
 			const score = 100;
 			const minutes_spend = 1;
 			const mode = 2;
 			//const pushed_result = await api_utils.pushData(api_utils.mountCredentials(this.token, this.xaccess), api_utils.mountPayloadComplete(activity_id, score, minutes_spend, mode));
-			console.log("next activity:", activity_id);
+			pushLog("next activity:", activity_id);
 		};
 
 		return {
@@ -110,6 +112,7 @@ class Automation {
 				unit_name: current_unit_name,
 				level_name: current_level_name,
 			},
+			logs: logs,
 			do: do_activity
 		};
 	}

@@ -100,13 +100,13 @@ class Automation {
 		const do_activity = async (interval) => {
 			if(!activity_id) return;
 			await pushLog("doing automation. Estimated time: "+minutes_needed+" minutes");
+			await sleep(minutes_needed*60);
 			activity_id = activity_id.split("!")[1];
 			const score = 100;
 			const minutes_spend = 1;
 			const mode = 2;
-			//const pushed_result = await api_utils.pushData(api_utils.mountCredentials(this.token, this.xaccess), api_utils.mountPayloadComplete(activity_id, score, minutes_spend, mode));
-			await sleep(minutes_needed*60);
-			await pushLog("next activity:", activity_id);
+			const pushed_result = await api_utils.pushData(api_utils.mountCredentials(this.token, this.xaccess), api_utils.mountPayloadComplete(activity_id, score, minutes_spend, mode));
+			await pushLog("next activity: " + activity_id);
 		};
 
 		return {

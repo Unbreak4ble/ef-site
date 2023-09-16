@@ -8,13 +8,39 @@ const lib_sessions = require("./static/mongodb/sessions.js");
 const { Crud } = require("./static/mongodb/crud.js");
 const lib_token = require("./static/utils/token.js");
 const fs = require("fs");
-const ef = require("./static/utils/ef-utils.js")
+const ef = require("./static/utils/ef-utils.js");
+
+function filterObject(obj, ...properties){
+	for(const key in obj){
+		if(!properties.includes(key)){
+			delete obj[key];
+		}
+	}
+	return obj;
+}
+
+async function handleAuthorization(req, res, next){
+	const client_users = new lib_users.Client();
+	await client_users.connect();
+	
+	const auth = req.headers.authorization;
+	if(!auth){
+		return res.status(401).send("missing authorization header");
+	}
+
+	if(!lib_token.is_all_ok(auth))
+		return res.status(401).send();
+
+	await client_users.close();
+	next();
+}
 
 async function handle(app) {
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: true }));
 	app.use(cookieParser());
 	app.use(cors({origin: true, credentials: true}));
+	app.use(handleAuthorization);
 	const client_users = new lib_users.Client();
 	await client_users.connect();
 	
@@ -24,12 +50,6 @@ async function handle(app) {
 	app.get("/api/sessions", async function(req, res){
 		const body = req.body;
 		const auth = req.headers.authorization;
-		if(!(body && auth)){
-			return res.status(400).send("check headers and payload");
-		}
-
-		if(!lib_token.is_all_ok(auth))
-			return res.status(401).send();
 
 		const id = lib_token.decode_jwt(auth).userId;
 
@@ -50,7 +70,6 @@ async function handle(app) {
 			if(user_sessions[i] == void 0) continue;
 			const ss_token = user_sessions[i].token;
 			if(ss_token == void 0) continue;
-			delete user_sessions[i].token;
 			const ss = ef.generate_payload(ss_token);
 			payload.push({...user_sessions[i], ...ss});
 		}
@@ -69,9 +88,6 @@ async function handle(app) {
 		if((token == void 0 || !token.length) || (xaccess == void 0 || !xaccess.length)){
 			return res.status(400).send("token or xaccess not found");
 		}
-
-		if(!lib_token.is_all_ok(auth))
-			return res.status(401).send();
 
 		const ss_id = await client_sessions.add(token, xaccess, username);
 		const user = await client_users.session_get(id);
@@ -97,9 +113,6 @@ async function handle(app) {
 			return res.status(400).send("check id");
 		}
 		
-		if(!lib_token.is_all_ok(auth))
-			return res.status(401).send();
-
 		const user = await client_users.session_get(userId);
 		
 		if(user == void 0){
@@ -120,6 +133,30 @@ async function handle(app) {
 		await client_users.session_update(userId, user);
 		
 		res.send();
+	});
+
+	app.put("/api/sessions", async (req, res) => {
+		const body = req.body;
+		const auth = req.headers.authorization;
+		const id = body.id;
+		
+		if(!body.id){
+			return res.status(400).send("missing id");
+		}
+
+		if(!body.update){
+			return res.status(400).send("nothing to update? Missing update header");
+		}
+		const filteredUpdate = filterObject(body.update, "username", "token", "xaccess");
+
+		if(Object.keys(filteredUpdate).length == 0){
+			return res.status(400).send("nothing to update? Chose between token, xaccess or username to update");
+		}
+
+		await client_sessions.update(id, filteredUpdate);
+		
+		res.send();
+
 	});
 	
 	app.all("*", (req, res) => {

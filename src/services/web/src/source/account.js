@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { loadSessions, handleEvent, websocket, get_time, calcDate, loadCookies, getJobInfo, pushSession, deleteSession, startJob, stopJob } from "./utils.js";
+import { loadSessions, handleEvent, websocket, get_time, calcDate, loadCookies, getJobInfo, pushSession, putSession, deleteSession, startJob, stopJob } from "./utils.js";
 
 const modalContext = createContext("none");
 
@@ -20,6 +20,15 @@ async function addSession(state, textRef, xaccessRef, nameRef){
 	setStatus(status);
 }
 
+async function updateSession(state, id, tokenRef, xaccessRef, nameRef) {
+	const [, setStatus] = state;
+	const name = nameRef.value;
+	const token = tokenRef.value;
+	const xaccess = xaccessRef.value;
+	const status = await putSession(id, {username: name, token: token, xaccess: xaccess});
+	setStatus(status);
+}
+
 function makeSessionItems(session){
 	const session_running = session.job_status == 1;
 	let [days, hours, mins, secs] = calcDate(get_time(), +session.token_expiry);
@@ -28,11 +37,13 @@ function makeSessionItems(session){
   const elapsed_time = session_running ? `${hours}:${mins}:${secs}` : "00:00:00";
 	[days, hours, mins, secs] = calcDate(get_time(), session.current.readyIn);
 	const activity_time_left =	(session.current.readyIn - get_time()) > 0 && session_running ? `${mins}:${secs}` : "00:00";
+	const activities_done = session.activities_done;
 
 	return {
 		"Token Expiry Timelapse": token_expiry,
 		"Elapsed Time": elapsed_time,
-		"activity timelapse": activity_time_left,
+		"Activity Timelapse": activity_time_left,
+		"Activities Done": activities_done,
 		"Current Level": session.current.level_name,
 		"Current Unit": session.current.unit_name,
 		"Current Lesson": session.current.lesson_name,
@@ -54,13 +65,35 @@ function setStatusClass(status){
 	return status_class
 }
 
+function EditSection({session}){
+	const [context, setContext] = useContext(modalContext);
+	const statusState = useState("");
+	const tokenRef = useRef();
+	const xaccessRef = useRef();
+	const nameRef = useRef();
+
+	return (
+		<div className="modal-content">
+			<div className="modal-form">
+				<textarea ref={nameRef} required placeholder="username" className="modal-input">{session.username}</textarea>
+				<textarea ref={tokenRef} required id="uniqueTextArea" className="modal-input" placeholder="token">{session.token}</textarea>
+				<textarea ref={xaccessRef} required placeholder="x-access" className="modal-input">{session.xaccess}</textarea>
+				<a className="modal-form-status">{statusState[0]}</a>
+				<button className="button" onClick={() => updateSession(statusState, session.id, tokenRef.current, xaccessRef.current, nameRef.current)}>update</button>
+			</div>
+		</div>
+	);
+}
+
 function Session({pushEvent, session}){
 	const [classes, setClasses] = useState("vertical_space_between session_delete_button");
 	const [stopClasses, setStopClasses] = useState("session_stop_button");
+	const [editSessionClass, setEditSessionClass] = useState("container_session_edit");
 	const [mainClass, setMainClass] = useState("container_session");
 	const logs = session.logs.map(x => `[${new Date(x.time).toLocaleString()}]: ${x.message}`).join("\n");
 	const {username, status, id} = session;
 	const isRunning = status === "running";
+	const editSectionClosed = editSessionClass == "container_session_edit";
 	
 	if(status == void 0){
 		return <></>;
@@ -104,12 +137,19 @@ function Session({pushEvent, session}){
 	const objToItem = (obj) => {
 		const keys = Object.keys(obj);
 		return keys.map(key => makeItem(key, obj[key]))
-	}
+	};
 
 	const sessionInfo = () => {
 		const obj = makeSessionItems(session);
 		return objToItem(obj);
-	}
+	};
+
+	const openCloseEditSection = () => {
+		if(editSectionClosed)
+			setEditSessionClass("container_session_edit edit_open_animation");
+		else
+			setEditSessionClass("container_session_edit");
+	};
 
 	return (
 		<div className={mainClass}>
@@ -122,9 +162,12 @@ function Session({pushEvent, session}){
 			<div className="container_session_logs">
 				<textarea disabled value={logs}></textarea>
 			</div>
+			<div className={editSessionClass}>
+				<EditSection session={session}/>
+			</div>
 			<div className="container_session_buttons">
 				<div className={classes} onClick={() => deleteThisSession() }></div>
-				<div className="vertical_space_between session_edit_button">Edit</div>
+				<div className="vertical_space_between session_edit_button" onClick={() => openCloseEditSection()}>{editSectionClosed ? "Edit" : "Close"}</div>
 				<div className={"vertical_space_between session_status_button " +setStatusClass(status)} onClick={() => handleThisSession() }></div>
 			</div>
 		</div>

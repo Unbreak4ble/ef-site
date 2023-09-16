@@ -81,6 +81,22 @@ export async function pushSession({token, username, xaccess}) {
 	return data;
 }
 
+export async function putSession(id, opts) {
+	const data = await new Promise((resolve) => axios({
+		method:"PUT",
+		url: API_SESSIONS,
+		headers: {
+			"content-type": "application/json",
+			authorization: loadCookies().token
+		},
+		data: {
+			id: id,
+			update: opts
+		}
+	}).then(() => resolve("updated")).catch(() => resolve("failed to update")));
+	return data;
+}
+
 export async function deleteSession(id) {
 	const result = await new Promise(resolve => axios({
 		method: "DELETE",

@@ -38,13 +38,17 @@ class Job {
 		}catch{}
 	}
 
+	async pushLog (msg) {
+		await this.sessions.pushLog(this.id, msg);
+	}
+
 	async run(){
 		let count = 0;
 		await this.sessions.update(this.id, {begin_time: get_time(), job_status: 1, activities_done: 0, logs: [], current: {lesson_name: "", step_name: "", unit_name: "", level_name: ""}});
-		await this.sessions.pushLog(this.id, "starting job...");
+		await this.pushLog("starting job...");
 		while(!this.stopped){
 			try{
-				const current = await this.automation.next(this.allow_interval);
+				const current = await this.automation.next(this.allow_interval, [this.id, this.sessions]);
 				if(this.stopped) return;
 				const updated_result = await this.sessions.update(this.id, {current: current.current});
 				if(!updated_result){
@@ -52,12 +56,10 @@ class Job {
 					break;
 				}
 				await current.do();
-				for(const log of current.logs){
-					await this.sessions.pushLog(this.id, log);
-				}
 				await this.sessions.update(this.id, {activities_done: ++count});
-			}catch{
-				await this.sessions.pushLog(this.id, "job crashed.");
+			}catch(err){
+				console.log(err);
+				await this.pushLog("job crashed.");
 				await this.stop(true);
 			}
 		}
@@ -67,7 +69,7 @@ class Job {
 		if(this.stopped) return;
 		try{
 			this.stopped = true;
-			await this.sessions.pushLog(this.id, "job stopped.");
+			await this.pushLog("job stopped.");
 			await this.sessions.update(this.id, {job_status: crash ? 2 : 0});
 			this.sessions.close();
 		}catch{}

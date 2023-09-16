@@ -21,14 +21,18 @@ async function addSession(state, textRef, xaccessRef, nameRef){
 }
 
 function makeSessionItems(session){
+	const session_running = session.job_status == 1;
 	let [days, hours, mins, secs] = calcDate(get_time(), +session.token_expiry);
-	const token_expiry = (session.token_expiry - get_time) > 0 ? `${hours}:${mins}:${secs}` : `00:00:00`;
+	const token_expiry = (session.token_expiry - get_time()) > 0 ? `${hours}:${mins}:${secs}` : `00:00:00`;
 	[days, hours, mins, secs] = calcDate(+session.begin_time, get_time());
-  const elapsed_time = session.job_status == 1 ? `${hours}:${mins}:${secs}` : "00:00:00";
-	
+  const elapsed_time = session_running ? `${hours}:${mins}:${secs}` : "00:00:00";
+	[days, hours, mins, secs] = calcDate(get_time(), session.current.readyIn);
+	const activity_time_left =	(session.current.readyIn - get_time()) > 0 && session_running ? `${mins}:${secs}` : "00:00";
+
 	return {
 		"Token Expiry Timelapse": token_expiry,
 		"Elapsed Time": elapsed_time,
+		"activity timelapse": activity_time_left,
 		"Current Level": session.current.level_name,
 		"Current Unit": session.current.unit_name,
 		"Current Lesson": session.current.lesson_name,

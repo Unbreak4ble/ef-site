@@ -1,4 +1,7 @@
 const api_utils = require("./api.js");
+const utils = require("./utils");
+
+const sleep = async(secs) => new Promise(resolve => setTimeout(resolve, secs*1000));
 
 function stepDone(step_data){
 	const summary = step_data.rollUpSummary;
@@ -88,21 +91,22 @@ class Automation {
 		this.stopped = false;
 	}
 
-	async next(allow_interval=true) {
-		console.log("next");
+	async next(allow_interval=true, [id, sessions_client]) {
 		const [current_level_name, current_unit_name, current_lesson_name] = await loadCurrentNames(this.token, this.xaccess);
 		const logs = [];
-		const pushLog = (msg, ...args) => logs.push(msg, ...args);
+		const pushLog = async (msg) => await sessions_client.pushLog(id, msg);
 		let [activity_id, current_step_name] = await loadNextActivity(this.token, this.xaccess);
+		const [minutes_needed, mode_needed] = await utils.measureActTime(api_utils.mountCredentials(this.token, this.xaccess), activity_id);
 		const do_activity = async (interval) => {
 			if(!activity_id) return;
-			pushLog("doing automation");
+			await pushLog("doing automation. Estimated time: "+minutes_needed+" minutes");
 			activity_id = activity_id.split("!")[1];
 			const score = 100;
 			const minutes_spend = 1;
 			const mode = 2;
 			//const pushed_result = await api_utils.pushData(api_utils.mountCredentials(this.token, this.xaccess), api_utils.mountPayloadComplete(activity_id, score, minutes_spend, mode));
-			pushLog("next activity:", activity_id);
+			await sleep(minutes_needed*60);
+			await pushLog("next activity:", activity_id);
 		};
 
 		return {
@@ -111,6 +115,7 @@ class Automation {
 				step_name: current_step_name,
 				unit_name: current_unit_name,
 				level_name: current_level_name,
+				readyIn: Math.floor((new Date()).getTime()/1000 + minutes_needed*60)
 			},
 			logs: logs,
 			do: do_activity

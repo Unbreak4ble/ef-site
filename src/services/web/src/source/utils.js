@@ -5,6 +5,10 @@ import services from "./services.js";
 import { useRef } from 'react';
 import { API_EVENTS, API_SESSIONS, JOBS_INFO, JOBS_START, JOBS_STOP, API_USERS_VALIDATE, API_USERS_LOGIN, API_USERS_REGISTER } from "./apis.js"
 
+export function padding_zero(num){
+	return num < 10 ? "0"+num : ""+num;
+}
+
 export function calcDate(min, max){
 	const diff = max-min;
 	const secs = diff%60;
@@ -13,7 +17,8 @@ export function calcDate(min, max){
 	const hours = (minutes - min_rest)/60;
 	const hour_rest = hours%24;
 	const days = (hours - hour_rest)/24;
-	return [days, hour_rest, min_rest, secs];
+	const times = [days, hour_rest, min_rest, secs].map(x => padding_zero(x));
+	return times
 }
 
 export function loadCookies() {

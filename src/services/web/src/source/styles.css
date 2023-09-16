@@ -96,7 +96,7 @@
 	border-radius: 10px;
 	background: #E2DFD2;
 	overflow: hidden;
-	width: 600px;
+	width: 90%;
 	height: 500px;
 }
 
@@ -115,7 +115,7 @@
 	flex-wrap: wrap;
 	width: 100%;
 	height: 50%;
-	overflow-y: hidden;
+	overflow-y: auto;
 }
 
 .container_session_info > div {
@@ -129,6 +129,7 @@
 	padding: 0;
 	margin: 0;
 	width: 100%;
+	background: green;
 }
 
 .container_session_buttons > * {
@@ -141,6 +142,8 @@
 	position: relative;
 	left: 0;
 	right: 0;
+	padding: 0;
+	margin: 0;
 	width: 100%;
 	height: 40%;
 }
@@ -184,59 +187,6 @@
 
 .container_session_status_stop {
 	background: #E74C3C !important;
-}
-
-.deleted_session {
-	position: absolute;
-	background: white;
-	width: 100%;
-	height: 20%;
-	bottom: 0 !important;
-	animation: successDeleteAnimation 0.1s 1;
-	animation-timing-function: linear;
-	animation-fill-mode: forwards;
-}
-
-.deleted_session > a {
-	position: absolute;
-	font-size: 20px;
-	bottom: 0;
-	left: 0;
-	right: 0;
-}
-/*
-.session_stop_button {
-	position: absolute;
-	background: white;
-	width: 50%;
-	height: 20%;
-	bottom: 0;
-	right: 0;
-}
-
-.session_stop_button > a {
-	position: absolute;
-	font-size: 20px;
-	bottom: 0;
-	left: 0;
-	right: 0;
-}
-
-.session_stop_button:hover {
-	z-index: 1;
-}*/
-.container_fill_animatione {
-	position: absolute;
-	width: 100%;
-	height: 0;
-	bottom: 20%;
-}
-.container_fill_animation {
-	position: absolute;
-	background: red;
-	width: 100%;
-	height: 0;
-	bottom: 20%;
 }
 
 .container_session_edit {
@@ -304,14 +254,6 @@
 	content: "stop";
 }
 
-.session_status_button:hover + .container_fill_animatione {
-	z-index: 1;
-	animation: deleteSessionAnimation 0.1s 1;
-	animation-timing-function: linear;
-	animation-fill-mode: forwards;
-
-}
-
 .session_delete_button {
 	background: var(--red) !important;
 }
@@ -335,44 +277,12 @@
 	height: 40px;
 }
 
-.vertical_space_between:hover + .container_fill_animation {
-	z-index: 1;
-	background: rgb(255, 10, 30);
-	animation: deleteSessionAnimation 0.1s 1;
-	animation-timing-function: linear;
-	animation-fill-mode: forwards;
-}
-
-
 .vertical_space_between > a {
 	position: absolute;
 	font-size: 20px;
 	bottom: 0;
 	left: 0;
 	right: 0;
-}
-
-@keyframes successDeleteAnimation {
-	from {
-		height: 60%;
-		background: rgb(255, 10, 30);
-	}
-	to {
-		background: rgb(255, 10, 30);
-		height: 100%;
-	}
-}
-
-@keyframes deleteSessionAnimation {
-	from {
-	}
-	to {
-		width: 100%;
-		height: 60%;
-		color: white;
-		font-size: 30px;
-		font-family: "Arial";
-	}
 }
 
 .hide {
@@ -526,7 +436,8 @@
 }
 
 .modal-form > * {
-	margin-bottom: 5%;
+	position: relative;
+	margin-bottom: 1%;
 }
 
 .modal-input {

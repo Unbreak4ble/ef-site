@@ -104,7 +104,6 @@ function Session({pushEvent, session}){
 	};
 		
 	const deleteThisSession = async() => {
-		setClasses("deleted_session");
 		const deleted = await deleteSession(id);
 		if(deleted)
 			setMainClass("hide");

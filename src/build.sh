@@ -1,9 +1,9 @@
 
-if [[ "$(docker images -q debian_up:latest 2> /dev/null)" == "[]" ]]; then
-  echo "building updated system";
+if [[ "$(docker images -q debian_up:latest 2> /dev/null)" == "" ]]; then
+  echo "building updated eco-system";
 	docker build -t debian_up:latest .
 else
-	echo "using debian_up:latest image";
+	echo "using debian_up:latest eco-system";
 fi
 
 if ! [[ "$(docker network inspect service_network >/dev/null 2>&1)" == "" ]]; then

@@ -28,14 +28,3 @@ services:
       - mainet
     volumes:
       - /data/db
-
-  redis_server:
-    image: redis
-    hostname: redis_server
-    container_name: redis
-    restart: unless-stopped
-    networks:
-      - mainet
-    volumes:
-      - ./redis-data:/data
-      - ./redis.conf:/usr/local/etc/redis/redis.conf
